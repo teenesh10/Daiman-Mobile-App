@@ -1,4 +1,6 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/home_page.dart';
+import 'package:daiman_mobile/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,30 +17,32 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       builder: (context, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Daiman',
+        title: 'Daiman Sports',
         theme: ThemeData(
-          primaryColor: const Color.fromARGB(255, 106, 8, 41),
-          scaffoldBackgroundColor: const Color.fromRGBO(229, 229, 229, 1),
+          primaryColor: Constants.primaryColor,
+          scaffoldBackgroundColor: Constants.bgColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.playfairDisplayTextTheme(),
         ),
-        initialRoute: "/",
+        initialRoute: "/loading",
         onGenerateRoute: _onGenerateRoute,
       ),
     );
   }
 
-// We need to make an onGenerateRoute function to handle routing
-
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case "/":
+      case "/loading":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const HomePage(); 
+          return const LoadingScreen(); // Show loading screen first
+        });
+      case "/home":
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return const HomePage();
         });
       default:
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const HomePage(); 
+          return const HomePage();
         });
     }
   }

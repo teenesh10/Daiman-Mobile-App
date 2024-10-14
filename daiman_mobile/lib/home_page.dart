@@ -1,4 +1,7 @@
+import 'package:daiman_mobile/views/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'constants.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -7,8 +10,16 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sports Facility Booking'),
+        title: Text(
+          'Sports Facility Booking',
+          style: GoogleFonts.lato(  // Apply custom font to AppBar title
+            color: Constants.appBarTitleColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: Constants.primaryColor,  // Use primary color for the AppBar background
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -16,39 +27,36 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'Welcome to the Sports Facility Booking App!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Constants.headingStyle,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomButton(
+              text: 'View Facilities',
               onPressed: () {
                 // Navigate to view facilities
               },
-              child: const Text('View Facilities'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
+            CustomButton(
+              text: 'Make a Booking',
               onPressed: () {
                 // Navigate to make a booking
               },
-              child: const Text('Make a Booking'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
+            CustomButton(
+              text: 'My Profile',
               onPressed: () {
                 // Navigate to user profile
               },
-              child: const Text('My Profile'),
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Contact us: support@example.com',
-              style: TextStyle(fontSize: 16),
+              style: Constants.contactTextStyle,
               textAlign: TextAlign.center,
             ),
           ],
