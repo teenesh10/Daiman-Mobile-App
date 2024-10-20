@@ -1,6 +1,4 @@
 // loading_screen.dart
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
 import 'package:daiman_mobile/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,43 +13,43 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-   bool _isNavigating = false; // Navigation lock
+  bool _isNavigating = false; // Navigation lock
+
   @override
   void initState() {
     super.initState();
     _checkLoginStatus();
   }
 
-_checkLoginStatus() async {
+  Future<void> _checkLoginStatus() async {
     if (_isNavigating) return; // Prevent multiple navigations
     _isNavigating = true; // Set the flag
 
-    User? user = FirebaseAuth.instance.currentUser;
+    // Retrieve login details from shared preferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    if (user != null) {
-      Navigator.pushReplacementNamed(context, "/home");
-    } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    if (isLoggedIn) {
+      // Attempt to log in with saved credentials
+      String? savedEmail = prefs.getString('userEmail');
+      String? savedPassword = prefs.getString('userPassword');
 
-      if (isLoggedIn) {
-        String? savedEmail = prefs.getString('userEmail');
-        String? savedPassword = prefs.getString('userPassword');
-
-        if (savedEmail != null && savedPassword != null) {
-          try {
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-                email: savedEmail, password: savedPassword);
-            Navigator.pushReplacementNamed(context, "/home");
-          } catch (e) {
-            Navigator.pushReplacementNamed(context, "/login");
-          }
-        } else {
+      if (savedEmail != null && savedPassword != null) {
+        try {
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+              email: savedEmail, password: savedPassword);
+          Navigator.pushReplacementNamed(context, "/home");
+        } catch (e) {
+          // If login fails, navigate to login page
           Navigator.pushReplacementNamed(context, "/login");
         }
       } else {
+        // No saved credentials, navigate to login page
         Navigator.pushReplacementNamed(context, "/login");
       }
+    } else {
+      // Not logged in and no shared preference data, navigate to login page
+      Navigator.pushReplacementNamed(context, "/login");
     }
 
     _isNavigating = false; // Reset the flag after the operation

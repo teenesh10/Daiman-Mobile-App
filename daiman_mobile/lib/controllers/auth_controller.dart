@@ -27,32 +27,34 @@ class AuthController {
     }
   }
 
-  // Register a new user
+   // Register a new user
   Future<String?> register(
       String username, String email, String password) async {
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      // Attempt to create a new user
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
 
-      // Add user to Firestore
-      UserModel newUser = UserModel(
-        userID: userCredential.user!.uid,
-        email: email,
-        username: username,
-      );
-      await _firestore
-          .collection('user')
-          .doc(newUser.userID)
-          .set(newUser.toFirestore());
+      // Save user data to Firestore
+      await _firestore.collection('user').doc(userCredential.user!.uid).set({
+        'username': username,
+        'email': email,
+      });
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
 
-      return null; // Success
+      return "Verification link sent to your email. Please verify to complete registration.";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return "This email is already in use."; // Email exists
+      }
+      return e.message; // Return other errors
     } catch (e) {
-      return e.toString(); // Return error
+      return e.toString(); // Return general errors
     }
   }
+
 
   // Forgot password
   Future<String?> resetPassword(String email) async {

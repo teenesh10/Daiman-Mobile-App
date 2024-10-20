@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/views/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,6 +52,18 @@ class HomePage extends StatelessWidget {
               text: 'My Profile',
               onPressed: () {
                 // Navigate to user profile
+              },
+            ),
+            const SizedBox(height: 20),
+            CustomButton(
+              text: 'Logout',
+              onPressed: () async {
+                // Call the logout function from AuthController
+                AuthController authController = AuthController();
+                await authController.logout();
+
+                // Navigate to the loading screen or login page
+                Navigator.pushReplacementNamed(context, "/login");
               },
             ),
             const SizedBox(height: 20),
