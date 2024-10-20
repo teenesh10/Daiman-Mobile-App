@@ -18,7 +18,7 @@ class Constants {
 
   static final TextStyle bodyTextStyle = GoogleFonts.lato(
     fontSize: 16,
-    color: Colors.black,
+    color: Colors.white,
   );
 
   static final TextStyle contactTextStyle = GoogleFonts.lato(
