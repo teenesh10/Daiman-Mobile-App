@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:daiman_mobile/controllers/auth_controller.dart';
+import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,28 +18,54 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final AuthController _authController = AuthController();
   String? errorMessage;
+  bool _isLoading = false;
 
- _login() async {
-  String? error = await _authController.login(
-      _emailController.text, _passwordController.text);
-  if (error == null) {
-    // Check if the email is verified
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null && user.emailVerified) {
-      Navigator.pushReplacementNamed(context, "/home");
-    } else {
-      // Show message to verify email
-      setState(() {
-        errorMessage = "Please verify your email before logging in.";
-      });
-    }
-  } else {
-    setState(() {
-      errorMessage = error;
-    });
+  // Helper method to validate email
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return emailRegex.hasMatch(email);
   }
-}
 
+  // Login method with validation, loading, and custom snackbar
+  _login() async {
+    // Input validation
+    if (!_isValidEmail(_emailController.text)) {
+      CustomSnackBar.showFailure(context, "Invalid Email", "Please enter a valid email format.");
+      return;
+    }
+    if (_passwordController.text.isEmpty) {
+      CustomSnackBar.showFailure(context, "Password Error", "Password cannot be empty.");
+      return;
+    }
+
+    // Set loading state
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Attempt login
+    String? error = await _authController.login(
+        _emailController.text, _passwordController.text);
+
+    // Stop loading
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (error == "Login successful") {
+      // Check if the email is verified
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.emailVerified) {
+        CustomSnackBar.showSuccess(context, "Login Success", "Welcome back!");
+        Navigator.pushReplacementNamed(context, "/home");
+      } else {
+        CustomSnackBar.showFailure(context, "Verification Required", "Please verify your email before logging in.");
+      }
+    } else {
+      // Show error message if any
+      CustomSnackBar.showFailure(context, "Login Failed", error ?? "An unexpected error occurred.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +136,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 10),
 
-              // Error Message
-              if (errorMessage != null)
+              // Loading spinner or error message
+              if (_isLoading)
+                const Center(child: CircularProgressIndicator())
+              else if (errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
@@ -124,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _login,
+                  onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16),

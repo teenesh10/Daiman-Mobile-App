@@ -1,5 +1,4 @@
 // auth_controller.dart
-import 'package:daiman_mobile/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,43 +10,55 @@ class AuthController {
   // Login with email and password
   Future<String?> login(String email, String password) async {
     try {
+      // Attempt to sign in the user
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
 
-      // Save user data in shared preferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLoggedIn', true);
-      prefs.setString('userID', userCredential.user!.uid);
-      prefs.setString('userEmail', email); // Save user email
-      prefs.setString('userPassword', password); // Save user password
+      // Reload user data to check verification status
+      await userCredential.user!.reload();
+      User? user = _auth.currentUser; // Get the current user
 
-      return null; // Success
+      // Check if email is verified
+      if (!user!.emailVerified) {
+        await _auth.signOut(); // Sign out the user if email is not verified
+        return "Please verify your email.";
+      }
+
+      return "Login successful"; // Login successful
+    } on FirebaseAuthException catch (e) {
+      return e.message; // Return any errors that occurred from Firebase
     } catch (e) {
-      return e.toString(); // Return error
+      return "An unexpected error occurred."; // General error message
     }
   }
 
-   // Register a new user
+  // Register a new user
   Future<String?> register(
       String username, String email, String password) async {
     try {
       // Attempt to create a new user
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      // Save user data to Firestore
+      // Send email verification
+      await userCredential.user!.sendEmailVerification();
+
+      // Save user data to Firestore with verification flag set to false
       await _firestore.collection('user').doc(userCredential.user!.uid).set({
         'username': username,
         'email': email,
       });
 
-      // Send email verification
-      await userCredential.user!.sendEmailVerification();
-
-      return "Verification link sent to your email. Please verify to complete registration.";
+      // Return success message here
+      return "Verification link sent to your email.";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        return "This email is already in use."; // Email exists
+        return "This email already exists."; // Email exists
       }
       return e.message; // Return other errors
     } catch (e) {
@@ -55,14 +66,31 @@ class AuthController {
     }
   }
 
+// Call this method after the user verifies their email
+  Future<void> updateEmailVerificationStatus(String uid) async {
+    await _firestore.collection('user').doc(uid).update({'isVerified': true});
+  }
 
   // Forgot password
   Future<String?> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return null; // Success
+      return "success"; // Indicate success explicitly
     } catch (e) {
-      return e.toString(); // Return error
+      // Handle Firebase-specific error messages
+      if (e is FirebaseAuthException) {
+        switch (e.code) {
+          case 'invalid-email':
+            return "The email address is not valid.";
+          case 'user-not-found':
+            return "No user found with this email.";
+          default:
+            return "An error occurred. Please try again.";
+        }
+      } else {
+        // Handle any other exceptions
+        return "An unknown error occurred. Please try again.";
+      }
     }
   }
 

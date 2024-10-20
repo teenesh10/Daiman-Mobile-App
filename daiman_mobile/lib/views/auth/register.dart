@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:daiman_mobile/controllers/auth_controller.dart';
+import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,17 +16,60 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final AuthController _authController = AuthController();
-  String? errorMessage;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool _isValidPassword(String password) {
+    return password.length >= 6; // Ensure password is at least 6 characters
+  }
 
   void _register() async {
-    if (_passwordController.text != _confirmPasswordController.text) {
-      setState(() {
-        errorMessage = "Passwords do not match";
-      });
+    if (!_isValidEmail(_emailController.text)) {
+      CustomSnackBar.showFailure(
+        context,
+        'Error!',
+        "Invalid email format.",
+      );
       return;
     }
+
+    if (!_isValidPassword(_passwordController.text)) {
+      CustomSnackBar.showFailure(
+        context,
+        'Error!',
+        "Password must be at least 6 characters long.",
+      );
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      CustomSnackBar.showFailure(
+        context,
+        'Error!',
+        "Passwords do not match.",
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
 
     String? message = await _authController.register(
       _usernameController.text,
@@ -33,12 +77,23 @@ class _RegisterPageState extends State<RegisterPage> {
       _passwordController.text,
     );
 
-    if (message == "success") {
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (message == "Verification link sent to your email.") {
+      CustomSnackBar.showSuccess(
+        context,
+        'Success!',
+        message!,
+      );
       Navigator.pushReplacementNamed(context, "/login");
     } else {
-      setState(() {
-        errorMessage = message;
-      });
+      CustomSnackBar.showFailure(
+        context,
+        'Error!',
+        message ?? "Registration failed",
+      );
     }
   }
 
@@ -135,7 +190,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                   labelText: "Confirm Password",
                   labelStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.lock_outline, color: Colors.black),
+                  prefixIcon:
+                      const Icon(Icons.lock_outline, color: Colors.black),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -144,24 +200,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-
-              // Error Message
-              if (errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
               const SizedBox(height: 20),
 
               // Register Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _register,
+                  onPressed: _isLoading
+                      ? null
+                      : _register, // Disable button when loading
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -169,10 +216,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    "Register",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Register",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
                 ),
               ),
               const SizedBox(height: 20),

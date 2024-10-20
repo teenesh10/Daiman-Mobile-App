@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:daiman_mobile/controllers/auth_controller.dart';
+import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,19 +15,23 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   final AuthController _authController = AuthController();
-  String? errorMessage;
   bool resetSent = false;
 
+  // Handle password reset and show appropriate snackbar
   void _resetPassword() async {
-    String? message = await _authController.resetPassword(_emailController.text);
+    String? message =
+        await _authController.resetPassword(_emailController.text);
+
     if (message == "success") {
+      CustomSnackBar.showSuccess(
+          context, "Success", "Password reset link sent to your email.");
       setState(() {
         resetSent = true;
-        errorMessage = null;
       });
     } else {
+      CustomSnackBar.showFailure(context, "Error",
+          message ?? "An error occurred during the password reset.");
       setState(() {
-        errorMessage = message;
         resetSent = false;
       });
     }
@@ -42,7 +47,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Reset Password Text
+              const SizedBox(height: 40),
               Text(
                 "Forgot Password?",
                 style: GoogleFonts.playfairDisplay(
@@ -81,19 +86,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // Error or Success Message
-              if (errorMessage != null)
-                Text(
-                  errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              if (resetSent)
-                const Text(
-                  "A password reset link has been sent to your email.",
-                  style: TextStyle(color: Colors.green),
-                ),
               const SizedBox(height: 20),
 
               // Reset Button
