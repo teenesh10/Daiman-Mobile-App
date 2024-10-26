@@ -1,6 +1,6 @@
 import 'package:daiman_mobile/constants.dart';
-import 'package:daiman_mobile/home_page.dart';
 import 'package:daiman_mobile/loading_screen.dart';
+import 'package:daiman_mobile/navbar.dart';
 import 'package:daiman_mobile/views/auth/forgot_password.dart';
 import 'package:daiman_mobile/views/auth/login.dart';
 import 'package:daiman_mobile/views/auth/register.dart';
@@ -13,7 +13,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, 
+    options: DefaultFirebaseOptions.currentPlatform,
   ); // Ensure Firebase is initialized
   runApp(const MyApp());
 }
@@ -30,12 +30,11 @@ class MyApp extends StatelessWidget {
         title: 'Daiman Sports',
         theme: ThemeData(
           primaryColor: Constants.primaryColor,
-          scaffoldBackgroundColor: Constants.bgColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.playfairDisplayTextTheme(),
         ),
-        initialRoute: "/loading",  // Default route when app starts
-        onGenerateRoute: _onGenerateRoute,  // Dynamic route generation
+        initialRoute: "/loading", // Default route when app starts
+        onGenerateRoute: _onGenerateRoute, // Dynamic route generation
       ),
     );
   }
@@ -45,27 +44,27 @@ class MyApp extends StatelessWidget {
     switch (settings.name) {
       case "/loading":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const LoadingScreen();  // Show loading screen first
+          return const LoadingScreen(); // Show loading screen first
         });
       case "/home":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return  const HomePage();  // Home screen
+          return const NavBar(); // Home screen
         });
       case "/login":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const LoginPage();  // Login page
+          return const LoginPage(); // Login page
         });
       case "/register":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const RegisterPage();  // Register page
+          return const RegisterPage(); // Register page
         });
       case "/forgot_password":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const ForgotPasswordPage();  // Forgot password page
+          return const ForgotPasswordPage(); // Forgot password page
         });
       default:
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const HomePage();  // Fallback to Home page
+          return const NavBar(); // Fallback to Home page
         });
     }
   }
