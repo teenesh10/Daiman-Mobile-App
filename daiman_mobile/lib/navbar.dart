@@ -40,24 +40,31 @@ class _NavBarState extends State<NavBar> {
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          color: Color.fromARGB(
-              255, 0, 0, 0), // Background color for the bottom nav
-          borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30)), // Rounded corners
+          color: Colors.white, // Background color for the bottom nav
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(0)), // Rounded corners
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26, // Shadow color
+              offset: Offset(0, -1), // Shadow position
+              blurRadius: 1.0, // Shadow blur radius
+              spreadRadius: 1.0, // Shadow spread radius
+            ),
+          ],
         ),
         child: SafeArea(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: GNav(
               gap: 8,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               backgroundColor: Colors.transparent,
-              color: Colors.white70,
+              color: Colors.black,
               activeColor: Colors.white,
               iconSize: 24,
-              tabBackgroundColor: const Color.fromARGB(
-                  255, 30, 30, 30), // Color for the active tab background
+              tabBackgroundColor:
+                  Colors.blueAccent, // Color for the active tab background
               duration: const Duration(milliseconds: 400),
               rippleColor: Colors.white54,
               onTabChange: _onItemTapped,

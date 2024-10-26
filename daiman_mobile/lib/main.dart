@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Daiman Sports',
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
           primaryColor: Constants.primaryColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.playfairDisplayTextTheme(),
