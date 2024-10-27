@@ -6,7 +6,6 @@ import 'package:daiman_mobile/views/auth/login.dart';
 import 'package:daiman_mobile/views/auth/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -32,7 +31,14 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           primaryColor: Constants.primaryColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.playfairDisplayTextTheme(),
+          textTheme: const TextTheme(
+            displayLarge: TextStyle(fontFamily: 'Poppins', fontSize: 32, fontWeight: FontWeight.bold),
+            displayMedium: TextStyle(fontFamily: 'Poppins', fontSize: 28, fontWeight: FontWeight.bold),
+            displaySmall: TextStyle(fontFamily: 'Poppins', fontSize: 24, fontWeight: FontWeight.bold),
+            bodyLarge: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.normal),
+            bodyMedium: TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.normal),
+            labelLarge: TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.bold),
+          ),
         ),
         initialRoute: "/loading", // Default route when app starts
         onGenerateRoute: _onGenerateRoute, // Dynamic route generation
