@@ -1,11 +1,13 @@
+import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/views/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({
+   HomeAppBar({
     super.key,
   });
 
+final AuthController _authController = AuthController();
   @override
   Widget build(BuildContext context) {
     return CustomAppBar(
@@ -51,9 +53,10 @@ class HomeAppBar extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          onPressed: () {
-            // Add your logout functionality here
-          },
+          onPressed: () async {
+              await _authController.logout(); // Call the logout function
+              Navigator.of(context).pushReplacementNamed('/login'); // Redirect to login page
+            },
           icon: const Icon(
             Icons.logout,
             color: Colors.black,

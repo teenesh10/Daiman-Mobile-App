@@ -26,6 +26,12 @@ class AuthController {
         return "Please verify your email.";
       }
 
+      // Save login status to SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userEmail', email);
+      await prefs.setString('userPassword', password);
+
       return "Login successful"; // Login successful
     } on FirebaseAuthException catch (e) {
       return e.message; // Return any errors that occurred from Firebase

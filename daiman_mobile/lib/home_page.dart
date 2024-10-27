@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  const HomeAppBar(),
+                  HomeAppBar(),
                   const SizedBox(height: 25.0),
                   const SearchContainer(),
                   const SizedBox(height: 32.0),
