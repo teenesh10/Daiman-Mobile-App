@@ -9,7 +9,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingOnPressed,
     this.showBackArrows = false,
     required Color backgroundColor,
-  }): _backgroundColor = backgroundColor;
+  }) : _backgroundColor = backgroundColor;
 
   final Widget? title;
   final bool showBackArrows;

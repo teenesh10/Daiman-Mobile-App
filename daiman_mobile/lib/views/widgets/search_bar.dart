@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
 
 class SearchContainer extends StatelessWidget {
-  const SearchContainer({
-    super.key,
-  });
+  const SearchContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width:
-          350.0, // Set a fixed width for a shorter search bar
-      height:
-          50.0, // Increase height for a taller search bar
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16.0), // Adjust padding as needed
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(color: Colors.grey),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.search, color: Colors.grey),
-          SizedBox(width: 16.0),
-          Text(
-            'Search...',
-            style: TextStyle(color: Colors.grey),
+    return SizedBox(
+      width: 350.0, // Adjust the width here as needed
+      child: TextFormField(
+        textAlignVertical: TextAlignVertical.center,
+        style: const TextStyle(
+          fontSize: 16,
+          height: 1.0,
+        ),
+        decoration: InputDecoration(
+          prefixIcon: const Icon(
+            Icons.search,
+            color: Colors.grey,
+            size: 24,
           ),
-        ],
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          labelText: "Search...",
+          labelStyle: const TextStyle(color: Colors.grey),
+          filled: true,
+          fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: const BorderSide(color: Colors.blue),
+          ),
+          isDense: true,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+        ),
       ),
     );
   }

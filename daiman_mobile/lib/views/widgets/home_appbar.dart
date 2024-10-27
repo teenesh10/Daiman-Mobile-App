@@ -42,7 +42,7 @@ class HomeAppBar extends StatelessWidget {
                 'Teenesh', // Replace with your actual subtitle text
                 style: TextStyle(
                   color: Colors.black, // Set the color of the subtitle text
-                  fontSize: 18, // Set the font size for the subtitle
+                  fontSize: 16, // Set the font size for the subtitle
                 ),
               ),
             ],
