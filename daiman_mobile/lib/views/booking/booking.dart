@@ -1,8 +1,11 @@
 import 'package:daiman_mobile/models/facility.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
+import 'package:daiman_mobile/views/widgets/calendar.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
+import 'package:daiman_mobile/views/widgets/duration_picker.dart';
 import 'package:daiman_mobile/views/widgets/facility_button.dart';
 import 'package:daiman_mobile/views/widgets/heading.dart';
+import 'package:daiman_mobile/views/widgets/time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,12 +42,12 @@ class BookingPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/facilitylist');
                 },
-                headingStyle: 'small', 
+                headingStyle: 'small',
               ),
             ),
             const SizedBox(height: 20),
             SizedBox(
-              height: 60, // Adjust height as needed
+              height: 50, // Adjust height as needed
               child: Consumer<BookingController>(
                 builder: (context, controller, child) {
                   if (controller.facilities.isEmpty) {
@@ -82,9 +85,73 @@ class BookingPage extends StatelessWidget {
               child: SectionHeading(
                 title: "Date",
                 showActionButton: false,
-                headingStyle: 'small', 
+                headingStyle: 'small',
               ),
             ),
+            BookingCalendar(
+              onDateSelected: (selectedDate) {
+                // Handle the selected date here
+                // print("Selected date: $selectedDate");
+              },
+            ),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: SectionHeading(
+                title: "Time",
+                showActionButton: false,
+                headingStyle: 'small',
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: TimePickerSpinner(
+                onTimeSelected: (selectedTime) {
+                  // print("Selected time: $selectedTime");
+                },
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: SectionHeading(
+                title: "Duration",
+                showActionButton: false,
+                headingStyle: 'small',
+              ),
+            ),
+            const SizedBox(height: 20),
+            const DurationSelector(), // Use the DurationSelector widget
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Handle search courts action here
+                        // print("Search courts button pressed");
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent, // Background color
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15), // Button height
+                        textStyle: const TextStyle(fontSize: 16), // Text style
+                      ),
+                      child: const Text(
+                        "Check Availability",
+                        textAlign: TextAlign.center, // Center the text
+                        style: TextStyle(
+                            color: Colors.white), // Set text color to white
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
           ],
         ),
       ),

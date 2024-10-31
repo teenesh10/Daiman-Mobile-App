@@ -20,7 +20,7 @@ class FacilityButton extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         width: 150, // Set a fixed width for all buttons
         height: 60, // Set a fixed height for the buttons
-        margin: const EdgeInsets.only(left: 10), // Add left margin for spacing
+        margin: const EdgeInsets.only(left: 10, bottom: 5), // Add left margin for spacing
         decoration: BoxDecoration(
           gradient: isSelected 
               ? LinearGradient(colors: [Colors.blue.shade300, Colors.blue.shade700]) // Gradient for selected
