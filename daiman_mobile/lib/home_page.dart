@@ -84,6 +84,15 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add chatbot or robot action here
+        },
+        backgroundColor: Colors.blueAccent, // Example robot icon
+        tooltip: 'Chatbot',
+        child: const Icon(Icons.android, color: Colors.white), // Tooltip when hovering over the button
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Default location
     );
   }
 }

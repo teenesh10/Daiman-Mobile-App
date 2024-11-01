@@ -37,20 +37,44 @@ class _DurationSelectorState extends State<DurationSelector> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(
-            icon: const Icon(Icons.remove),
-            onPressed: _decrementDuration,
+          // Decrement Button
+          GestureDetector(
+            onTap: _decrementDuration,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Colors.blueAccent,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.remove,
+                color: Colors.white,
+              ),
+            ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: Text(
               '$_duration Hour${_duration > 1 ? 's' : ''}', // Add 's' for plural if needed
               style: const TextStyle(fontSize: 18),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _incrementDuration,
+          // Increment Button
+          GestureDetector(
+            onTap: _incrementDuration,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Colors.blueAccent,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
