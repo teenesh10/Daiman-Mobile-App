@@ -153,15 +153,13 @@ class BookingPage extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: CustomAppBar(
-              backgroundColor: Colors.transparent,
               showBackArrows: true,
-              leadingIcon: Icons.arrow_back,
-              leadingOnPressed: () => Navigator.pop(context),
+              leadingIconColor: Colors.white,
             ),
           ),
         ],

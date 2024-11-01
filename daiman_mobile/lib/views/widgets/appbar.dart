@@ -8,58 +8,50 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.leadingOnPressed,
     this.showBackArrows = false,
-    required Color backgroundColor,
-  }) : _backgroundColor = backgroundColor;
+    this.titleColor = Colors.black, // Default to black
+    this.leadingIconColor = Colors.black, // Default to black
+  });
 
   final Widget? title;
   final bool showBackArrows;
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
-  final Color _backgroundColor;
+  final Color titleColor;
+  final Color leadingIconColor;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: AppBar(
-        backgroundColor: _backgroundColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: showBackArrows
             ? IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white, // Set back arrow color to white
-                ),
+                icon: Icon(Icons.arrow_back,
+                    color: leadingIconColor), // Use dynamic color
               )
             : leadingIcon != null
                 ? IconButton(
                     onPressed: leadingOnPressed,
-                    icon: Icon(
-                      leadingIcon,
-                      color: Colors.white, // Set custom leading icon color to white
-                    ),
+                    icon: Icon(leadingIcon,
+                        color: leadingIconColor), // Use dynamic color
                   )
                 : null,
-        title: title,
-        actions: actions?.map((action) {
-          if (action is IconButton) {
-            return IconButton(
-              icon: IconTheme(
-                data: const IconThemeData(color: Colors.white), // Set action icon color to white
-                child: action.icon,
-              ),
-              onPressed: action.onPressed,
-            );
-          }
-          return action;
-        }).toList(),
+        title: title != null
+            ? DefaultTextStyle(
+                style: TextStyle(color: titleColor), // Use dynamic color
+                child: title!,
+              )
+            : null,
+        actions: actions,
       ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // Use default AppBar height
+  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
 }

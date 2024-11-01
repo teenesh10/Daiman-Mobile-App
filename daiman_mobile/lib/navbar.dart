@@ -2,6 +2,7 @@
 
 import 'package:daiman_mobile/home_page.dart';
 import 'package:daiman_mobile/views/booking/booking.dart';
+import 'package:daiman_mobile/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -19,7 +20,7 @@ class _NavBarState extends State<NavBar> {
     const HomePage(),
     const BookingPage(),
     const Center(child: Text('History Screen')),
-    const Center(child: Text('Profile Screen')),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
