@@ -6,6 +6,7 @@ import 'package:daiman_mobile/views/auth/forgot_password.dart';
 import 'package:daiman_mobile/views/auth/login.dart';
 import 'package:daiman_mobile/views/auth/register.dart';
 import 'package:daiman_mobile/views/booking/booking.dart';
+import 'package:daiman_mobile/views/booking/booking_history.dart';
 import 'package:daiman_mobile/views/booking/facility_list.dart';
 import 'package:daiman_mobile/views/profile/profile.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +109,10 @@ class MyApp extends StatelessWidget {
       case "/facilitylist":
         return MaterialPageRoute(builder: (BuildContext context) {
           return const FacilityListPage(); // Forgot password page
+        });
+      case "/history":
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return const BookingHistoryPage(); // Forgot password page
         });
       default:
         return MaterialPageRoute(builder: (BuildContext context) {
