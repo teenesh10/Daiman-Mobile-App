@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
         });
       case "/profile":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const ProfilePage(); // Forgot password page
+          return  ProfilePage(); // Forgot password page
         });
       case "/booking":
         return MaterialPageRoute(builder: (BuildContext context) {

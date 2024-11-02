@@ -1,131 +1,136 @@
+import 'package:daiman_mobile/controllers/auth_controller.dart';
+import 'package:daiman_mobile/views/widgets/confirmation_dialog.dart';
+import 'package:daiman_mobile/views/widgets/profile_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+
+  final AuthController _authController = AuthController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20), // Add some top padding
-            // Heading "Profile" at the center
-            const Text(
-              "Profile",
-              style: TextStyle(
-                fontSize: 24, // Heading font size
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30), // Space between heading and avatar
-            // Circle Avatar with Person Icon
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.blueAccent.withOpacity(0.2),
-              child: const Icon(
-                Icons.person,
-                size: 50,
-                color: Colors.blueAccent,
-              ),
-            ),
-            const SizedBox(height: 40),
-            // Form Fields for Profile Information
-            _buildProfileTextField(
-              label: "Full Name",
-              icon: Icons.person,
-            ),
-            const SizedBox(height: 15),
-            _buildProfileTextField(
-              label: "Email Address",
-              icon: Icons.email,
-            ),
-            const SizedBox(height: 15),
-            _buildProfileTextField(
-              label: "Phone Number",
-              icon: Icons.phone,
-            ),
-            const SizedBox(height: 30),
-            // Edit Profile Button Expanded to Full Width
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle edit profile action here
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  "Edit Profile",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Joined Date and Delete Button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text.rich(
-                  TextSpan(
-                    text: "Joined ",
-                    style: TextStyle(fontSize: 12),
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: _authController.getUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text("Error loading profile data"));
+          }
+
+          final userData = snapshot.data!;
+          final username = userData['username'] ?? "N/A";
+          final email = userData['email'] ?? "N/A";
+
+          return FutureBuilder<DateTime?>(
+            future: _authController.getUserJoinedDate(),
+            builder: (context, joinedDateSnapshot) {
+              String joinedDate = "Date not available";
+
+              if (joinedDateSnapshot.connectionState == ConnectionState.done &&
+                  joinedDateSnapshot.hasData) {
+                final date = joinedDateSnapshot.data!;
+                joinedDate = DateFormat('d MMMM yyyy').format(date);
+              }
+
+              return SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      TextSpan(
-                        text: "31 October 2024",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12),
+                      const SizedBox(height: 40),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.blueAccent.withOpacity(0.2),
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        username,
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      Text(
+                        email,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 20),
+                      const Divider(),
+                      const SizedBox(height: 10),
+                      ProfileMenuWidget(
+                          title: "Settings",
+                          icon: Icons.settings,
+                          onPress: () {}),
+                      ProfileMenuWidget(
+                          title: "Billing Details",
+                          icon: Icons.account_balance_wallet,
+                          onPress: () {}),
+                      ProfileMenuWidget(
+                          title: "User Management",
+                          icon: Icons.verified_user,
+                          onPress: () {}),
+                      const Divider(),
+                      const SizedBox(height: 10),
+                      ProfileMenuWidget(
+                          title: "Terms & Conditions",
+                          icon: Icons.info,
+                          onPress: () {}),
+                      ProfileMenuWidget(
+                        title: "Logout",
+                        icon: Icons.logout,
+                        textColor: Colors.red,
+                        endIcon: false,
+                        onPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => ConfirmationPopup(
+                              title: "Are you sure you want to Logout?",
+                              confirmText: "Yes",
+                              cancelText: "No",
+                              onConfirm: () async {
+                                await _authController.logout();
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/login');
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 60),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text.rich(
+                            TextSpan(
+                              text: "Joined ",
+                              style: const TextStyle(fontSize: 12),
+                              children: [
+                                TextSpan(
+                                  text: joinedDate,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle delete action
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.withOpacity(0.1),
-                    elevation: 0,
-                    foregroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: const Text("Delete"),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileTextField(
-      {required String label, required IconData icon}) {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.blueAccent),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.blueAccent),
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }

@@ -111,4 +111,31 @@ class AuthController {
     prefs.remove('userEmail');
     prefs.remove('userPassword');
   }
+
+// Add this function in AuthController
+  Future<Map<String, dynamic>?> getUserData() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot snapshot =
+            await _firestore.collection('user').doc(user.uid).get();
+        return snapshot.data() as Map<String, dynamic>?;
+      }
+      return null;
+    } catch (e) {
+      print("Error fetching user data: $e");
+      return null;
+    }
+  }
+
+// Add this function in AuthController
+  Future<DateTime?> getUserJoinedDate() async {
+    try {
+      User? user = _auth.currentUser;
+      return user?.metadata.creationTime; // Returns the account creation time
+    } catch (e) {
+      print("Error fetching joined date: $e");
+      return null;
+    }
+  }
 }

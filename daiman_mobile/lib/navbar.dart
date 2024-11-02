@@ -20,7 +20,7 @@ class _NavBarState extends State<NavBar> {
     const HomePage(),
     const BookingPage(),
     const Center(child: Text('History Screen')),
-    const ProfilePage(),
+     ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
