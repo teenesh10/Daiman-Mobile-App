@@ -1,6 +1,5 @@
 import 'package:daiman_mobile/models/facility.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
-import 'package:daiman_mobile/views/widgets/appbar.dart';
 import 'package:daiman_mobile/views/widgets/calendar.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
 import 'package:daiman_mobile/views/widgets/duration_picker.dart';
@@ -151,15 +150,6 @@ class BookingPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
               ],
-            ),
-          ),
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CustomAppBar(
-              showBackArrows: true,
-              leadingIconColor: Colors.white,
             ),
           ),
         ],
