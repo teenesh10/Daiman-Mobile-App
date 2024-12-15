@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -84,15 +84,17 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-       floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add chatbot or robot action here
+          Navigator.pushNamed(context, '/chat');
         },
         backgroundColor: Colors.blueAccent, // Example robot icon
         tooltip: 'Chatbot',
-        child: const Icon(Icons.android, color: Colors.white), // Tooltip when hovering over the button
+        child: const Icon(Icons.android,
+            color: Colors.white), // Tooltip when hovering over the button
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Default location
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.endFloat, // Default location
     );
   }
 }

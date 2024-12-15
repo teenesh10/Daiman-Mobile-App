@@ -7,7 +7,11 @@ import 'package:daiman_mobile/views/auth/login.dart';
 import 'package:daiman_mobile/views/auth/register.dart';
 import 'package:daiman_mobile/views/booking/booking.dart';
 import 'package:daiman_mobile/views/booking/booking_history.dart';
+import 'package:daiman_mobile/views/booking/court_list.dart';
 import 'package:daiman_mobile/views/booking/facility_list.dart';
+import 'package:daiman_mobile/views/booking/live_availability.dart';
+import 'package:daiman_mobile/views/chatbot/chatbot_screen.dart';
+import 'package:daiman_mobile/views/chatbot/report_screen.dart';
 import 'package:daiman_mobile/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -100,7 +104,7 @@ class MyApp extends StatelessWidget {
         });
       case "/profile":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return  ProfilePage(); // Forgot password page
+          return ProfilePage(); // Forgot password page
         });
       case "/booking":
         return MaterialPageRoute(builder: (BuildContext context) {
@@ -113,6 +117,22 @@ class MyApp extends StatelessWidget {
       case "/history":
         return MaterialPageRoute(builder: (BuildContext context) {
           return const BookingHistoryPage(); // Forgot password page
+        });
+      case "/live":
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return LiveAvailabilityPage(); // Forgot password page
+        });
+      case "/court":
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return CourtListPage(); // Forgot password page
+        });
+      case "/chat":
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return const ChatScreen();
+        });
+      case "/report":
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return ReportIssueScreen();
         });
       default:
         return MaterialPageRoute(builder: (BuildContext context) {
