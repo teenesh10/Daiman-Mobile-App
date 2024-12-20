@@ -51,6 +51,7 @@ dependencies:
   flutter_chat_ui: ^1.6.15
   flutter_chat_types: ^3.6.2
   uuid: ^4.5.1
+  cloud_functions: ^5.1.0
 
 dev_dependencies:
   flutter_test:
