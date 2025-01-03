@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 class TimePickerSpinner extends StatefulWidget {
-  final Function(String) onTimeSelected;
+  final Function(TimeOfDay) onTimeSelected;
 
   const TimePickerSpinner({required this.onTimeSelected, super.key});
 
@@ -17,9 +17,15 @@ class _TimePickerSpinnerState extends State<TimePickerSpinner> {
   int _selectedMinute = 0;
 
   void _onTimeChange() {
-    final formattedTime = '${_selectedHour.toString().padLeft(2, '0')}:'
-        '${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod';
-    widget.onTimeSelected(formattedTime);
+    int hour = _selectedHour;
+    if (_selectedPeriod == 'PM' && hour != 12) {
+      hour += 12;
+    } else if (_selectedPeriod == 'AM' && hour == 12) {
+      hour = 0;
+    }
+
+    final timeOfDay = TimeOfDay(hour: hour, minute: _selectedMinute);
+    widget.onTimeSelected(timeOfDay);
   }
 
   @override

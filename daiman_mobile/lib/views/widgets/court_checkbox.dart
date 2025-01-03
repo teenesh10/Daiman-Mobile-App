@@ -16,7 +16,9 @@ class CourtTile extends StatelessWidget {
     return ListTile(
       leading: Checkbox(
         value: isSelected,
-        onChanged: onChanged, // Pass the nullable bool
+        onChanged: onChanged,
+        activeColor: Colors.blueAccent, // Set color of the checkbox when selected
+        checkColor: Colors.white, // Set the color of the check mark
       ),
       title: Text(courtName),
     );

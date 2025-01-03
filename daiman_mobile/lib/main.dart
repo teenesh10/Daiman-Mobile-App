@@ -120,11 +120,20 @@ class MyApp extends StatelessWidget {
         });
       case "/live":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return LiveAvailabilityPage(); // Forgot password page
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          return LiveAvailabilityPage(facilityId: args['facilityId']);
         });
       case "/court":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return CourtListPage(); // Forgot password page
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          return CourtListPage(
+            facilityID: args['facilityID'],
+            date: args['date'],
+            startTime: args['startTime'],
+            duration: args['duration'],
+          );
         });
       case "/chat":
         return MaterialPageRoute(builder: (BuildContext context) {

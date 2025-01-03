@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 
 class DurationSelector extends StatefulWidget {
-  const DurationSelector({super.key});
+  final Function(int duration) onDurationSelected;
+
+  const DurationSelector({super.key, required this.onDurationSelected});
 
   @override
   _DurationSelectorState createState() => _DurationSelectorState();
@@ -17,6 +19,7 @@ class _DurationSelectorState extends State<DurationSelector> {
       setState(() {
         _duration++;
       });
+      widget.onDurationSelected(_duration); // Call the callback with the updated duration
       print("Selected duration: $_duration Hour(s)");
     }
   }
@@ -26,6 +29,7 @@ class _DurationSelectorState extends State<DurationSelector> {
       setState(() {
         _duration--;
       });
+      widget.onDurationSelected(_duration); // Call the callback with the updated duration
       print("Selected duration: $_duration Hour(s)");
     }
   }

@@ -1,5 +1,6 @@
 import 'package:daiman_mobile/models/facility.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
+import 'package:daiman_mobile/views/booking/court_list.dart';
 import 'package:daiman_mobile/views/widgets/calendar.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
 import 'package:daiman_mobile/views/widgets/duration_picker.dart';
@@ -8,13 +9,23 @@ import 'package:daiman_mobile/views/widgets/heading.dart';
 import 'package:daiman_mobile/views/widgets/time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
-class BookingPage extends StatelessWidget {
+class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
 
   @override
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+  int? selectedDuration;
+
+  @override
   Widget build(BuildContext context) {
-    Provider.of<BookingController>(context);
+    final controller = Provider.of<BookingController>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -91,8 +102,12 @@ class BookingPage extends StatelessWidget {
                   ),
                 ),
                 BookingCalendar(
-                  onDateSelected: (selectedDate) {
-                    // Handle the selected date here
+                  onDateSelected: (date) {
+                    setState(() {
+                      selectedDate = date;
+                    });
+                    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+                    print("Selected Date: $formattedDate"); // Debug log
                   },
                 ),
                 const SizedBox(height: 30),
@@ -107,8 +122,12 @@ class BookingPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 Center(
                   child: TimePickerSpinner(
-                    onTimeSelected: (selectedTime) {
-                      // Handle selected time
+                    onTimeSelected: (time) {
+                      setState(() {
+                        selectedTime = time;
+                      });
+                      print(
+                          "Selected Time: ${time.format(context)}"); // Debug log
                     },
                   ),
                 ),
@@ -122,7 +141,13 @@ class BookingPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const DurationSelector(),
+                DurationSelector(
+                  onDurationSelected: (duration) {
+                    setState(() {
+                      selectedDuration = duration;
+                    });
+                  },
+                ),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -131,7 +156,48 @@ class BookingPage extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            // Handle search courts action here
+                            if (controller.selectedFacility != null &&
+                                selectedDate != null &&
+                                selectedTime != null &&
+                                selectedDuration != null) {
+                              final formattedDate = DateFormat('yyyy-MM-dd')
+                                  .format(selectedDate!);
+                              // Log the selected inputs
+                              print(
+                                  "Selected Facility: ${controller.selectedFacility!.facilityName}");
+                              print("Selected Date: $formattedDate");
+                              print(
+                                  "Selected Time: ${selectedTime!.format(context)}");
+                              print(
+                                  "Selected Duration: ${selectedDuration!} hours");
+                              // Convert TimeOfDay to DateTime for CourtListPage
+                              final startTime = DateTime(
+                                selectedDate!.year,
+                                selectedDate!.month,
+                                selectedDate!.day,
+                                selectedTime!.hour,
+                                selectedTime!.minute,
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CourtListPage(
+                                    facilityID:
+                                        controller.selectedFacility!.facilityID,
+                                    date: selectedDate!,
+                                    startTime: startTime,
+                                    duration: selectedDuration!,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                  _getValidationMessage(),
+                                )),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
@@ -155,6 +221,21 @@ class BookingPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getValidationMessage() {
+    if (selectedDate == null) return "Please select a date.";
+    if (selectedTime == null) {
+      print("Selected Time is null: $selectedTime"); // Debugging log
+      return "Please select a time.";
+    }
+    if (selectedDuration == null) return "Please select a duration.";
+    if (Provider.of<BookingController>(context, listen: false)
+            .selectedFacility ==
+        null) {
+      return "Please select a facility.";
+    }
+    return "Validation passed.";
   }
 
   Widget _buildFacilityButton({
