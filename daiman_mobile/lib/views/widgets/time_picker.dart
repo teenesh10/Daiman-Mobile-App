@@ -13,7 +13,7 @@ class TimePickerSpinner extends StatefulWidget {
 
 class _TimePickerSpinnerState extends State<TimePickerSpinner> {
   String _selectedPeriod = 'AM';
-  int _selectedHour = 12;
+  int _selectedHour = 08;
   int _selectedMinute = 0;
 
   void _onTimeChange() {

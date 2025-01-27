@@ -1,6 +1,7 @@
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/models/court.dart';
 import 'package:daiman_mobile/views/widgets/court_checkbox.dart';
+import 'package:daiman_mobile/views/widgets/price_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,11 +34,27 @@ class CourtListPage extends StatelessWidget {
           // Placeholder image under the AppBar
           Stack(
             children: [
-              Image.network(
-                'https://via.placeholder.com/400x200', // Placeholder image URL
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Consumer<BookingController>(
+                  builder: (context, controller, child) {
+                    if (controller.rates.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return PricingInfoBox(
+                      facilityName:
+                          controller.selectedFacility?.facilityName ?? '',
+                      weekdayRateBefore6:
+                          controller.rates['weekdayRateBefore6'] ?? 0.0,
+                      weekdayRateAfter6:
+                          controller.rates['weekdayRateAfter6'] ?? 0.0,
+                      weekendRateBefore6:
+                          controller.rates['weekendRateBefore6'] ?? 0.0,
+                      weekendRateAfter6:
+                          controller.rates['weekendRateAfter6'] ?? 0.0,
+                    );
+                  },
+                ),
               ),
               Positioned(
                 bottom: 0,

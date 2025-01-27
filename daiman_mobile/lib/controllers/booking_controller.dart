@@ -8,6 +8,7 @@ class BookingController with ChangeNotifier {
   Facility? selectedFacility; // The currently selected facility
   List<Court> courts = [];
   List<Court> selectedCourts = [];
+  Map<String, double> rates = {};
 
   BookingController() {
     _fetchFacilities(); // Fetch facilities when the controller is initialized
@@ -27,6 +28,14 @@ class BookingController with ChangeNotifier {
 
   void selectFacility(Facility facility) {
     selectedFacility = facility;
+    // Clear previous rates before fetching new ones
+    rates = {
+      'weekdayRateBefore6': 0.0,
+      'weekdayRateAfter6': 0.0,
+      'weekendRateBefore6': 0.0,
+      'weekendRateAfter6': 0.0,
+    };
+    _fetchFacilityRates(facility.facilityID);
     notifyListeners(); // Notify listeners to update UI
   }
 
@@ -137,5 +146,37 @@ class BookingController with ChangeNotifier {
   void removeCourtFromSelection(Court court) {
     selectedCourts.remove(court);
     notifyListeners();
+  }
+
+  // Fetch the rates from the Fee subcollection for the selected facility
+  Future<void> _fetchFacilityRates(String facilityId) async {
+    try {
+      final feeSnapshot = await FirebaseFirestore.instance
+          .collection('facility')
+          .doc(facilityId)
+          .collection('fee')
+          .get();
+
+      if (feeSnapshot.docs.isEmpty) {
+        print('No fee data found for this facility.');
+        return;
+      }
+
+      final ratesData = feeSnapshot.docs.first.data(); // Assuming one document
+      rates = {
+        'weekdayRateBefore6':
+            ratesData['weekdayRateBefore6']?.toDouble() ?? 0.0,
+        'weekdayRateAfter6': ratesData['weekdayRateAfter6']?.toDouble() ?? 0.0,
+        'weekendRateBefore6':
+            ratesData['weekendRateBefore6']?.toDouble() ?? 0.0,
+        'weekendRateAfter6': ratesData['weekendRateAfter6']?.toDouble() ?? 0.0,
+      };
+
+      print(
+          'Fetched rates: $rates'); // Log the rates to check if they are correct
+      notifyListeners(); // Notify listeners to update UI
+    } catch (e) {
+      print('Error fetching facility rates: $e');
+    }
   }
 }
