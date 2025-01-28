@@ -1,5 +1,6 @@
 import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
+import 'package:daiman_mobile/controllers/payment_controller.dart';
 import 'package:daiman_mobile/loading_screen.dart';
 import 'package:daiman_mobile/navbar.dart';
 import 'package:daiman_mobile/views/auth/forgot_password.dart';
@@ -25,8 +26,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Ensure Firebase is initialized
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => BookingController(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => BookingController()),
+        ChangeNotifierProvider(create: (context) => PaymentController()),
+      ],
       child: const MyApp(),
     ),
   );

@@ -1,5 +1,7 @@
 import 'package:daiman_mobile/controllers/booking_controller.dart';
+import 'package:daiman_mobile/controllers/payment_controller.dart';
 import 'package:daiman_mobile/models/court.dart';
+import 'package:daiman_mobile/views/booking/booking_summary.dart';
 import 'package:daiman_mobile/views/widgets/court_checkbox.dart';
 import 'package:daiman_mobile/views/widgets/price_info.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class CourtListPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Price Information
           Stack(
             children: [
               Padding(
@@ -74,7 +77,9 @@ class CourtListPage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16), // Padding between image and court list
+          const SizedBox(height: 16),
+
+          // Court Selection List
           Expanded(
             child: FutureBuilder<List<Court>>(
               future: controller.fetchAvailableCourts(
@@ -89,12 +94,41 @@ class CourtListPage extends StatelessWidget {
                 }
 
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Error: ${snapshot.error}',
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Retry logic
+                            controller.fetchAvailableCourts(
+                              facilityID,
+                              date,
+                              startTime,
+                              duration,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                          ),
+                          child: const Text("Retry"),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: Text("No courts available for the selected time."),
+                    child: Text(
+                      "No courts available for the selected time. Please try a different time or date.",
+                      textAlign: TextAlign.center,
+                    ),
                   );
                 }
 
@@ -124,7 +158,8 @@ class CourtListPage extends StatelessWidget {
               },
             ),
           ),
-          // Confirm Selection button at the bottom
+
+          // Confirm Selection Button
           Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -132,17 +167,28 @@ class CourtListPage extends StatelessWidget {
               onPressed: controller.selectedCourts.isEmpty
                   ? null
                   : () {
-                      // Handle confirm action
-                      Navigator.pop(context, controller.selectedCourts);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChangeNotifierProvider(
+                            create: (_) => PaymentController(),
+                            child: const BookingSummaryPage(),
+                          ),
+                        ),
+                      );
                     },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: controller.selectedCourts.isEmpty
+                    ? Colors.grey
+                    : Colors.blueAccent,
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  "Confirm Selection",
-                  style: TextStyle(color: Colors.white),
+                  controller.selectedCourts.isEmpty
+                      ? "Select Courts to Continue"
+                      : "Confirm Selection (${controller.selectedCourts.length})",
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),

@@ -11,6 +11,10 @@ class BookingController with ChangeNotifier {
   Map<String, double> rates = {}; // Facility rates
   List<Court> _cachedAvailableCourts = [];
 
+  DateTime? selectedDate; // Selected date
+  DateTime? startTime; // Selected start time
+  int duration = 1; // Selected duration, default is 1 hour
+
   BookingController() {
     _fetchFacilities(); // Fetch facilities when the controller is initialized
   }
@@ -166,5 +170,23 @@ class BookingController with ChangeNotifier {
     } catch (e) {
       print('Error fetching facility rates: $e');
     }
+  }
+
+  void setSelectedDate(DateTime date) {
+    selectedDate = date;
+    print("Selected Date set in Controller: $selectedDate");
+    notifyListeners();
+  }
+
+  void setStartTime(DateTime time) {
+    startTime = time;
+    print("Selected Start Time set in Controller: $startTime");
+    notifyListeners();
+  }
+
+  void setDuration(int hours) {
+    duration = hours;
+    print("Selected Duration set in Controller: $duration hours");
+    notifyListeners();
   }
 }

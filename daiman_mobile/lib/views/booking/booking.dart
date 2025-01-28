@@ -107,6 +107,8 @@ class _BookingPageState extends State<BookingPage> {
                       selectedDate = date;
                     });
                     final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+                    Provider.of<BookingController>(context, listen: false)
+                        .setSelectedDate(date);
                     print("Selected Date: $formattedDate"); // Debug log
                   },
                 ),
@@ -126,6 +128,15 @@ class _BookingPageState extends State<BookingPage> {
                       setState(() {
                         selectedTime = time;
                       });
+                      final startTime = DateTime(
+                        selectedDate?.year ?? DateTime.now().year,
+                        selectedDate?.month ?? DateTime.now().month,
+                        selectedDate?.day ?? DateTime.now().day,
+                        time.hour,
+                        time.minute,
+                      );
+                      Provider.of<BookingController>(context, listen: false)
+                          .setStartTime(startTime);
                       print(
                           "Selected Time: ${time.format(context)}"); // Debug log
                     },
@@ -146,6 +157,8 @@ class _BookingPageState extends State<BookingPage> {
                     setState(() {
                       selectedDuration = duration;
                     });
+                    Provider.of<BookingController>(context, listen: false)
+                        .setDuration(duration);
                   },
                 ),
                 const SizedBox(height: 30),
@@ -160,17 +173,6 @@ class _BookingPageState extends State<BookingPage> {
                                 selectedDate != null &&
                                 selectedTime != null &&
                                 selectedDuration != null) {
-                              final formattedDate = DateFormat('yyyy-MM-dd')
-                                  .format(selectedDate!);
-                              // Log the selected inputs
-                              print(
-                                  "Selected Facility: ${controller.selectedFacility!.facilityName}");
-                              print("Selected Date: $formattedDate");
-                              print(
-                                  "Selected Time: ${selectedTime!.format(context)}");
-                              print(
-                                  "Selected Duration: ${selectedDuration!} hours");
-                              // Convert TimeOfDay to DateTime for CourtListPage
                               final startTime = DateTime(
                                 selectedDate!.year,
                                 selectedDate!.month,
@@ -178,6 +180,12 @@ class _BookingPageState extends State<BookingPage> {
                                 selectedTime!.hour,
                                 selectedTime!.minute,
                               );
+
+                              // Set values in the BookingController
+                              controller.setSelectedDate(selectedDate!);
+                              controller.setStartTime(startTime);
+                              controller.setDuration(selectedDuration!);
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -193,9 +201,8 @@ class _BookingPageState extends State<BookingPage> {
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                    content: Text(
-                                  _getValidationMessage(),
-                                )),
+                                  content: Text(_getValidationMessage()),
+                                ),
                               );
                             }
                           },
