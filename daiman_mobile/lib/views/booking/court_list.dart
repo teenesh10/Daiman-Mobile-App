@@ -31,7 +31,6 @@ class CourtListPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Placeholder image under the AppBar
           Stack(
             children: [
               Padding(
@@ -58,7 +57,7 @@ class CourtListPage extends StatelessWidget {
               ),
               Positioned(
                 bottom: 0,
-                right: 10,
+                right: 25,
                 child: InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, '/live_availability');
@@ -68,6 +67,7 @@ class CourtListPage extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
+                      decorationColor: Colors.blue,
                     ),
                   ),
                 ),
@@ -78,26 +78,26 @@ class CourtListPage extends StatelessWidget {
           Expanded(
             child: FutureBuilder<List<Court>>(
               future: controller.fetchAvailableCourts(
-                  facilityID, date, startTime, duration),
+                facilityID,
+                date,
+                startTime,
+                duration,
+              ),
               builder: (context, snapshot) {
-                // Show loading indicator while fetching data
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                // Show error if no data is available
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
 
-                // Show message if no courts are available
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
                     child: Text("No courts available for the selected time."),
                   );
                 }
 
-                // Extract available courts data from the snapshot
                 final courts = snapshot.data!;
 
                 return ListView.builder(
@@ -105,16 +105,17 @@ class CourtListPage extends StatelessWidget {
                   itemCount: courts.length,
                   itemBuilder: (context, index) {
                     final court = courts[index];
+                    final isSelected =
+                        controller.selectedCourts.contains(court);
+
                     return CourtTile(
                       courtName: court.courtName,
-                      isSelected: controller.selectedCourts.contains(court),
+                      isSelected: isSelected,
                       onChanged: (isSelected) {
-                        if (isSelected == true) {
+                        if (isSelected) {
                           controller.addCourtToSelection(court);
-                          print('Selected Court: ${court.courtName}');
                         } else {
                           controller.removeCourtFromSelection(court);
-                          print('Removed Court: ${court.courtName}');
                         }
                       },
                     );
