@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "fyp-daiman"
-  }
+    "default": "fyp-daiman",
+    "fyp": "fyp-daiman"
+  },
+  "targets": {},
+  "etags": {}
 }

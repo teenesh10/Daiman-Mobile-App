@@ -91,12 +91,12 @@ class BookingSummaryPage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/payment_gateway');
+                      Navigator.pushNamed(context, '/payment');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                     ),
-                    child: const Text("Pay"),
+                    child: const Text("Book Now"),
                   ),
                 ),
               ],
