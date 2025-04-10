@@ -36,25 +36,26 @@
 // });
 
 const functions = require('firebase-functions');
+const express = require('express');
+const app = express();
+
 const Stripe = require('stripe');
-const stripe = Stripe('sk_test_51QXxohJMi70xUkuHPH0EqLy0PLI2sR8xJAXfxq6iiTY18I9el4Y1bwIJ7wHrCbr5n64jedOaAniV285Tipu6HIvE00axPlmvQ0');
+const stripe = Stripe('sk_test_51QXxohJMi70xUkuHPH0EqLy0PLI2sR8xJAXfxq6iiTY18I9el4Y1bwIJ7wHrCbr5n64jedOaAniV285Tipu6HIvE00axPlmvQ0'); // Replace with your Stripe secret key
 
-exports.createPaymentIntent = functions.region('asia-southeast1').https.onRequest(async (req, res) => {
-  if (req.method !== 'POST') {
-    res.status(405).send('Method Not Allowed');
-    return;
-  }
-
+app.post('/createPaymentIntent', async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
+      amount: parseInt(amount), // Ensure amount is an integer
+      currency: currency,
     });
 
     res.status(200).send({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
+    console.error('Error creating PaymentIntent:', error);
     res.status(500).send({ error: error.message });
   }
 });
+
+exports.createPaymentIntent = functions.https.onRequest(app);
