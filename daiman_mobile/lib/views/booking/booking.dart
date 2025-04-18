@@ -36,14 +36,12 @@ class _BookingPageState extends State<BookingPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomShapeWidget(
-                  child: Container(
-                    color: Colors.blueAccent,
+                  child: SizedBox(
                     height: 200,
-                    child: const Center(
-                      child: Text(
-                        'Image Here',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    width: double.infinity,
+                    child: Image.asset(
+                      'assets/images/img1.jpg',
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
