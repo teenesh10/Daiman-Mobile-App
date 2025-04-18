@@ -28,7 +28,7 @@ class ReportIssueScreen extends StatelessWidget {
                 final issue = _controller.text.trim();
                 if (issue.isNotEmpty) {
                   FirebaseFirestore.instance
-                      .collection('query_reports')
+                      .collection('query')
                       .add({
                     "issue": issue,
                     "timestamp": FieldValue.serverTimestamp(),

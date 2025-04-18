@@ -2,6 +2,7 @@
 
 import 'package:daiman_mobile/services/chatbot.dart';
 import 'package:daiman_mobile/services/chatbot_response.dart';
+import 'package:daiman_mobile/views/chatbot/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -84,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } else if (category == "Report an Issue") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ReportPage()),
+        MaterialPageRoute(builder: (context) => ReportIssueScreen()),
       );
     }
   }
@@ -97,7 +98,8 @@ class _ChatScreenState extends State<ChatScreen> {
       types.TextMessage(
         author: _bot,
         id: _uuid.v4(),
-        text: "Hello! Welcome to our Daiman Sport Centre. What can we help you with today?",
+        text:
+            "Hello! Welcome to our Daiman Sport Centre. What can we help you with today?",
       ),
     );
   }
@@ -109,20 +111,24 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           if (_showCategories)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => _handleCategorySelection("General Inquiry"),
-                    child: const Text("General Inquiry"),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () => _handleCategorySelection("Report an Issue"),
-                    child: const Text("Report an Issue"),
-                  ),
-                ],
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          _handleCategorySelection("General Inquiry"),
+                      child: const Text("General Inquiry"),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () =>
+                          _handleCategorySelection("Report an Issue"),
+                      child: const Text("Report an Issue"),
+                    ),
+                  ],
+                ),
               ),
             ),
           if (!_showCategories)
@@ -137,19 +143,6 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
         ],
       ),
-    );
-  }
-}
-
-// Example ReportPage
-class ReportPage extends StatelessWidget {
-  const ReportPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Report an Issue")),
-      body: const Center(child: Text("Report Issue Page")),
     );
   }
 }

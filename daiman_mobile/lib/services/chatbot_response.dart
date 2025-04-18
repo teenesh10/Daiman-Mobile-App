@@ -1,8 +1,8 @@
 
 final Map<String, String> keywordResponses = {
   "operating hours": "The operating hours are 8 AM to 2 AM.",
-  "location": "Our Daiman Sport Centre is located at Daiman Johor Bahru.",
-  "membership": "Membership details are available on our website or at the front desk.",
+  "location": "Our Daiman Sport Centre is located at Sri Skudai, Johor Bahru.",
+  "membership": "Membership details are available on our website or walk-in to get more details.",
   "facilities": "We offer facilities like badminton courts, swimming pools, and gyms.",
   "pricing": "Facility pricing depends on the timeslot and type. Please specify the facility.",
   "contact": "You can reach us at 0494837374747 for further assistance.",
