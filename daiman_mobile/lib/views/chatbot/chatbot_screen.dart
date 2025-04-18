@@ -46,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
       try {
         response = await _openAIService.sendMessage(text);
       } catch (e) {
-        response = "Error: Unable to fetch a response.";
+        response = "Sorry! Please contact our customer service to know more.";
       }
     }
 
