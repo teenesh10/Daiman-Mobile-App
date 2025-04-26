@@ -23,6 +23,7 @@ class ChatbotController {
         'userID': userID,
         'date': now,
         'report': reportContent,
+        'status': 'pending', 
       });
 
       print("Report submitted successfully.");

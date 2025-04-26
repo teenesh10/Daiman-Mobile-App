@@ -5,12 +5,14 @@ class Query {
   String userID;
   DateTime date;
   String report;
+  String status;
 
   Query({
     required this.queryID,
     required this.userID,
     required this.date,
     required this.report,
+    required this.status,
   });
 
   // Convert Booking instance to a map for Firestore
@@ -20,6 +22,7 @@ class Query {
       'userID': userID,
       'date': date,
       'report': report,
+      'status': status,
     };
   }
 
@@ -30,6 +33,7 @@ class Query {
       userID: map['userID'] ?? '',
       date: (map['date'] as Timestamp).toDate(),
       report: map['report'] ?? '',
+      status: map['status'] ?? '',
     );
   }
 }

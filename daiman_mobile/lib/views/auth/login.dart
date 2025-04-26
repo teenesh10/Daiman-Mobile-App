@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       // Check if the email is verified
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && user.emailVerified) {
-        CustomSnackBar.showSuccess(context, "Login Success", "Welcome back!");
+        // CustomSnackBar.showSuccess(context, "Login Success", "Welcome back!");
         Navigator.pushReplacementNamed(context, "/home");
       } else {
         CustomSnackBar.showFailure(context, "Verification Required",
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // Show error message if any
       CustomSnackBar.showFailure(
-          context, "Login Failed", error ?? "An unexpected error occurred.");
+          context, "Login Failed", "An unexpected error occurred.");
     }
   }
 
