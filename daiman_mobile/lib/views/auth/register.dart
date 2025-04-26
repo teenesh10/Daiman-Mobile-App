@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   bool _isValidPassword(String password) {
-    return password.length >= 6; // Ensure password is at least 6 characters
+    return password.length >= 6;
   }
 
   void _register() async {
@@ -107,36 +108,32 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Text
               Text(
-                "Create an Account",
-                style: GoogleFonts.playfairDisplay(
+                "Hello! Register to get started",
+                style: GoogleFonts.lato(
                   textStyle: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
                     color: Colors.black,
                   ),
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                "Join us and start your journey",
+                "Get an Daiman account and find your joy of playing sports",
                 style: GoogleFonts.lato(
                   textStyle: const TextStyle(
                     fontSize: 16,
-                    color: Colors.grey,
+                    color: Colors.black,
                   ),
                 ),
               ),
               const SizedBox(height: 40),
-
-              // Username TextField
               TextField(
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: "Username",
                   labelStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.person, color: Colors.black),
+                  prefixIcon: const Icon(Icons.person),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -146,15 +143,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Email TextField
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email",
                   labelStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.email, color: Colors.black),
+                  prefixIcon: const Icon(Icons.email),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -164,15 +159,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Password TextField
               TextField(
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: "Password",
                   labelStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.lock, color: Colors.black),
+                  prefixIcon: const Icon(Icons.lock),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -182,16 +175,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Confirm Password TextField
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: "Confirm Password",
                   labelStyle: const TextStyle(color: Colors.black),
-                  prefixIcon:
-                      const Icon(Icons.lock_outline, color: Colors.black),
+                  prefixIcon: const Icon(Icons.lock_outline),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -200,9 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // Register Button
+              const SizedBox(height: 130),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -210,7 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ? null
                       : _register, // Disable button when loading
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    backgroundColor: Constants.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -220,13 +208,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
                           "Register",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Login Link
               Center(
                 child: GestureDetector(
                   onTap: () {
@@ -237,17 +223,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       text: "Already have an account? ",
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
-                          fontSize: 16,
                           color: Colors.black,
                         ),
                       ),
                       children: const [
                         TextSpan(
-                          text: "Login",
+                          text: "Login now",
                           style: TextStyle(
-                            fontSize: 16,
                             color: Colors.blue,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],

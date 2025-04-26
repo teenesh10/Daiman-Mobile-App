@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final AuthController _authController = AuthController();
   bool resetSent = false;
 
-  // Handle password reset and show appropriate snackbar
   void _resetPassword() async {
     String? message =
         await _authController.resetPassword(_emailController.text);
@@ -29,8 +29,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         resetSent = true;
       });
     } else {
-      CustomSnackBar.showFailure(context, "Error",
-          message ?? "An error occurred during the password reset.");
+      CustomSnackBar.showFailure(
+          context, "Error", "Enter your valid email address.");
       setState(() {
         resetSent = false;
       });
@@ -49,35 +49,32 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             children: [
               const SizedBox(height: 40),
               Text(
-                "Forgot Password?",
-                style: GoogleFonts.playfairDisplay(
+                "Forgot password?",
+                style: GoogleFonts.lato(
                   textStyle: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
                     color: Colors.black,
                   ),
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                "Enter your email to reset your password",
+                "No worries! Just enter your email to reset your password",
                 style: GoogleFonts.lato(
                   textStyle: const TextStyle(
                     fontSize: 16,
-                    color: Colors.grey,
+                    color: Colors.black,
                   ),
                 ),
               ),
               const SizedBox(height: 40),
-
-              // Email TextField
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email",
                   labelStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.email, color: Colors.black),
+                  prefixIcon: const Icon(Icons.email),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -86,29 +83,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // Reset Button
+              const SizedBox(height: 380),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _resetPassword,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    backgroundColor: Constants.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: const Text(
-                    "Reset Password",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    "Send Verification Link",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Back to Login Link
               Center(
                 child: GestureDetector(
                   onTap: () {
@@ -116,10 +109,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   },
                   child: RichText(
                     text: TextSpan(
-                      text: "Back to ",
+                      text: "Remember Password?",
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
-                          fontSize: 16,
                           color: Colors.black,
                         ),
                       ),
@@ -127,9 +119,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         TextSpan(
                           text: "Login",
                           style: TextStyle(
-                            fontSize: 16,
                             color: Colors.blue,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],

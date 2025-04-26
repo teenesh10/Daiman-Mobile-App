@@ -1,4 +1,3 @@
-// auth_controller.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +6,6 @@ class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Login with email and password
   Future<String?> login(String email, String password) async {
     try {
       // Attempt to sign in the user
@@ -22,7 +20,7 @@ class AuthController {
 
       // Check if email is verified
       if (!user!.emailVerified) {
-        await _auth.signOut(); // Sign out the user if email is not verified
+        await _auth.signOut();
         return "Please verify your email.";
       }
 
@@ -32,15 +30,14 @@ class AuthController {
       await prefs.setString('userEmail', email);
       await prefs.setString('userPassword', password);
 
-      return "Login successful"; // Login successful
+      return "Login successful";
     } on FirebaseAuthException catch (e) {
-      return e.message; // Return any errors that occurred from Firebase
+      return e.message;
     } catch (e) {
-      return "An unexpected error occurred."; // General error message
+      return "An unexpected error occurred.";
     }
   }
 
-  // Register a new user
   Future<String?> register(
       String username, String email, String password) async {
     try {
@@ -51,7 +48,6 @@ class AuthController {
         password: password,
       );
 
-      // Send email verification
       await userCredential.user!.sendEmailVerification();
 
       // Save user data to Firestore with verification flag set to false
@@ -64,20 +60,18 @@ class AuthController {
       return "Verification link sent to your email.";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        return "This email already exists."; // Email exists
+        return "This email already exists.";
       }
-      return e.message; // Return other errors
+      return e.message;
     } catch (e) {
-      return e.toString(); // Return general errors
+      return e.toString();
     }
   }
 
-// Call this method after the user verifies their email
   Future<void> updateEmailVerificationStatus(String uid) async {
     await _firestore.collection('user').doc(uid).update({'isVerified': true});
   }
 
-  // Forgot password
   Future<String?> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -94,15 +88,13 @@ class AuthController {
             return "An error occurred. Please try again.";
         }
       } else {
-        // Handle any other exceptions
         return "An unknown error occurred. Please try again.";
       }
     }
   }
 
-  // Logout method
   Future<void> logout() async {
-    await _auth.signOut(); // Sign out from Firebase
+    await _auth.signOut();
 
     // Clear user data in shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -112,7 +104,6 @@ class AuthController {
     prefs.remove('userPassword');
   }
 
-// Add this function in AuthController
   Future<Map<String, dynamic>?> getUserData() async {
     try {
       User? user = _auth.currentUser;
@@ -128,11 +119,10 @@ class AuthController {
     }
   }
 
-// Add this function in AuthController
   Future<DateTime?> getUserJoinedDate() async {
     try {
       User? user = _auth.currentUser;
-      return user?.metadata.creationTime; // Returns the account creation time
+      return user?.metadata.creationTime;
     } catch (e) {
       print("Error fetching joined date: $e");
       return null;
