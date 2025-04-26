@@ -36,26 +36,23 @@
 // });
 
 const functions = require('firebase-functions');
-const express = require('express');
-const app = express();
-
 const Stripe = require('stripe');
-const stripe = Stripe('sk_test_51QXxohJMi70xUkuHPH0EqLy0PLI2sR8xJAXfxq6iiTY18I9el4Y1bwIJ7wHrCbr5n64jedOaAniV285Tipu6HIvE00axPlmvQ0'); // Replace with your Stripe secret key
+const stripe = Stripe('sk_test_51RG0vFQtpx6XeqJu4uL2xGWKexgEgRu7evsSTRNIQNnzz4o8J01oL3IM1FQD58by4I94SSfPpdrSWl1gbHOFc9UG00dTziWwT2'); // Replace with your Stripe secret key
 
-app.post('/createPaymentIntent', async (req, res) => {
-  const { amount, currency } = req.body;
-
+exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
   try {
+    const { amount, currency } = req.body;
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: parseInt(amount), // Ensure amount is an integer
-      currency: currency,
+      amount,
+      currency,
     });
 
-    res.status(200).send({ clientSecret: paymentIntent.client_secret });
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret,
+    });
   } catch (error) {
-    console.error('Error creating PaymentIntent:', error);
-    res.status(500).send({ error: error.message });
+    console.error("Error creating payment intent:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
-
-exports.createPaymentIntent = functions.https.onRequest(app);

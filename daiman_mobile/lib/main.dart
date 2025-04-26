@@ -13,7 +13,6 @@ import 'package:daiman_mobile/views/booking/facility_list.dart';
 import 'package:daiman_mobile/views/booking/live_availability.dart';
 import 'package:daiman_mobile/views/chatbot/chatbot_screen.dart';
 import 'package:daiman_mobile/views/chatbot/report_screen.dart';
-import 'package:daiman_mobile/views/payment/payment_screen.dart';
 import 'package:daiman_mobile/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -147,10 +146,6 @@ class MyApp extends StatelessWidget {
       case "/report":
         return MaterialPageRoute(builder: (BuildContext context) {
           return ReportIssueScreen();
-        });
-      case "/payment":
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return const PaymentScreen();
         });
       default:
         return MaterialPageRoute(builder: (BuildContext context) {

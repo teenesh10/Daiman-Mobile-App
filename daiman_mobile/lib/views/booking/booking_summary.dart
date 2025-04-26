@@ -17,6 +17,7 @@ class BookingSummaryPage extends StatelessWidget {
     final startTime = bookingController.startTime;
     final duration = bookingController.duration;
     final selectedCourts = bookingController.selectedCourts;
+    final facilityRates = bookingController.rates;
 
     if (selectedDate == null || startTime == null) {
       return Scaffold(
@@ -91,7 +92,15 @@ class BookingSummaryPage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/payment');
+                      // Trigger the payment process directly from here
+                      paymentController.makePayment(
+                        selectedCourts,
+                        facilityRates,
+                        selectedDate,
+                        startTime,
+                        duration,
+                        context,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
