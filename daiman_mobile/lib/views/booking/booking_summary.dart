@@ -93,12 +93,15 @@ class BookingSummaryPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Trigger the payment process directly from here
+                      final selectedFacility =
+                          bookingController.selectedFacility;
                       paymentController.makePayment(
                         selectedCourts,
                         facilityRates,
                         selectedDate,
                         startTime,
                         duration,
+                        selectedFacility?.facilityID ?? '',
                         context,
                       );
                     },

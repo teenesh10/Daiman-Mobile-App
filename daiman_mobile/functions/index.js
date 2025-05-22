@@ -18,7 +18,8 @@ exports.createPaymentIntent = onRequest({ region: "us-central1" }, async (req, r
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
-      receipt_email: email || undefined, 
+      receipt_email: email,
+      payment_method_types: ['card', 'fpx', 'grabpay'], 
     });
 
     res.status(200).send({

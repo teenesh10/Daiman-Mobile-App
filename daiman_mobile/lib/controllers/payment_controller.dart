@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daiman_mobile/custom_snackbar.dart';
+import 'package:daiman_mobile/models/booking.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:daiman_mobile/models/court.dart';
@@ -38,14 +41,16 @@ class PaymentController with ChangeNotifier {
   }
 
   Future<void> makePayment(
-      List<Court> selectedCourts,
-      Map<String, double> facilityRates,
-      DateTime date,
-      DateTime startTime,
-      int duration,
-      BuildContext context) async {
+    List<Court> selectedCourts,
+    Map<String, double> facilityRates,
+    DateTime date,
+    DateTime startTime,
+    int duration,
+    String facilityID,
+    BuildContext context,
+  ) async {
     try {
-      // Calculate the total amount
+      // 1. Calculate total amount in sen (RM x 100)
       final totalAmountRM = calculateTotalAmount(
         selectedCourts: selectedCourts,
         facilityRates: facilityRates,
@@ -53,15 +58,15 @@ class PaymentController with ChangeNotifier {
         startTime: startTime,
         duration: duration,
       );
-
-      // Convert to cents (sen in Malaysia)
       final totalAmountSen = (totalAmountRM * 100).round();
 
-      // Create PaymentIntent
-      final paymentIntentData =
-          await createPaymentIntent(totalAmountSen.toString(), 'MYR');
+      // 2. Create payment intent
+      final paymentIntentData = await createPaymentIntent(
+        totalAmountSen.toString(),
+        'MYR',
+      );
 
-      // Initialize the payment sheet
+      // 3. Initialize payment sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentData['clientSecret'],
@@ -70,16 +75,54 @@ class PaymentController with ChangeNotifier {
         ),
       );
 
-      // Show the payment sheet
-      await Stripe.instance.presentPaymentSheet();
+      // 4. Present payment sheet
+      try {
+        await Stripe.instance.presentPaymentSheet();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Payment Successful!')),
-      );
+        // 5. Store bookings in Firestore after success
+        await storeBookingToFirestore(
+          selectedCourts: selectedCourts,
+          date: date,
+          startTime: startTime,
+          duration: duration,
+          facilityID: facilityID,
+        );
+
+        // 6. Show success snackbar
+        CustomSnackBar.showSuccess(
+          context,
+          'Payment Successful!',
+          'Your booking has been confirmed.',
+        );
+
+        // 7. Redirect to booking history page
+        Navigator.pushReplacementNamed(context, '/history');
+      } on StripeException catch (e) {
+        if (e.error.code == FailureCode.Canceled) {
+          CustomSnackBar.showFailure(
+            context,
+            'Payment Cancelled',
+            'You cancelled the payment.',
+          );
+        } else {
+          CustomSnackBar.showFailure(
+            context,
+            'Payment Failed',
+            e.error.localizedMessage ?? 'Something went wrong.',
+          );
+        }
+      } catch (e) {
+        CustomSnackBar.showFailure(
+          context,
+          'Payment Error',
+          e.toString(),
+        );
+      }
     } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Payment Failed: $e')),
+      CustomSnackBar.showFailure(
+        context,
+        'Error',
+        e.toString(),
       );
     }
   }
@@ -104,6 +147,34 @@ class PaymentController with ChangeNotifier {
     } else {
       print('Failed to create payment intent: ${response.body}');
       throw Exception('Failed to create payment intent');
+    }
+  }
+
+  Future<void> storeBookingToFirestore({
+    required String facilityID,
+    required List<Court> selectedCourts,
+    required DateTime date,
+    required DateTime startTime,
+    required int duration,
+  }) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final bookingCollection = FirebaseFirestore.instance.collection('booking');
+
+    for (final court in selectedCourts) {
+      final bookingID = bookingCollection.doc().id;
+
+      final booking = Booking(
+        bookingID: bookingID,
+        userID: user!.uid,
+        facilityID: facilityID,
+        courtID: court.courtID,
+        date: date,
+        startTime: startTime,
+        duration: duration,
+        bookingMade: DateTime.now(),
+      );
+
+      await bookingCollection.doc(bookingID).set(booking.toMap());
     }
   }
 }
