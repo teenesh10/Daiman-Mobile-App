@@ -50,6 +50,7 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -67,4 +68,9 @@ flutter {
 
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.4.0')
+    implementation 'com.google.android.material:material:1.9.0' // Updated material design
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.fragment:fragment-ktx:1.6.1' // Updated fragment with Kotlin support
+    implementation 'androidx.activity:activity-ktx:1.7.2' // Add activity KTX
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4' // Add coroutines
 }

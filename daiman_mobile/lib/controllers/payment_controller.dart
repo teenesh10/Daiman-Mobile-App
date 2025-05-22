@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:daiman_mobile/models/court.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -64,7 +65,8 @@ class PaymentController with ChangeNotifier {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentData['clientSecret'],
-          merchantDisplayName: 'Your Merchant Name',
+          merchantDisplayName: 'Daiman Sri Skudai Sport Centre',
+          style: ThemeMode.light,
         ),
       );
 
@@ -85,8 +87,7 @@ class PaymentController with ChangeNotifier {
   Future<Map<String, dynamic>> createPaymentIntent(
       String amount, String currency) async {
     final response = await http.post(
-      Uri.parse(
-          'https://us-central1-fyp-daiman.cloudfunctions.net/createPaymentIntent'),
+      Uri.parse('https://createpaymentintent-d7u4qgi7fa-uc.a.run.app'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -94,6 +95,7 @@ class PaymentController with ChangeNotifier {
         // <-- dynamic instead of String
         'amount': int.parse(amount), // Convert amount string to integer
         'currency': currency,
+        'email': FirebaseAuth.instance.currentUser?.email,
       }),
     );
 
