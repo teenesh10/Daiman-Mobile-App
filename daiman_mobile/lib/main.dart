@@ -1,4 +1,5 @@
 import 'package:daiman_mobile/constants.dart';
+import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/controllers/payment_controller.dart';
 import 'package:daiman_mobile/loading_screen.dart';
@@ -25,6 +26,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Ensure Firebase is initialized
+  await AuthController().checkUserStatus();
   runApp(
     MultiProvider(
       providers: [

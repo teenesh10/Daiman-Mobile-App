@@ -128,4 +128,39 @@ class AuthController {
       return null;
     }
   }
+
+  Future<void> deleteUserCompletely() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      // Delete user Firestore data
+      await _firestore.collection('user').doc(user.uid).delete();
+      // Delete user Authentication account
+      await user.delete();
+    }
+  }
+
+  Future<void> checkUserStatus() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        // Force refresh the user
+        await user.reload();
+        user =
+            FirebaseAuth.instance.currentUser; 
+
+        if (user == null) {
+          // User is gone after reload
+          await logout();
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          // User no longer exists
+          await logout();
+        }
+      } catch (e) {
+        print('Unexpected error during user reload: $e');
+      }
+    }
+  }
 }

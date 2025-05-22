@@ -12,7 +12,7 @@ class OpenAIService {
     };
 
     final body = jsonEncode({
-      "model": "gpt-4-mini", // Use "gpt-4-mini" if applicable
+      "model": "gpt-4-mini", 
       "messages": [
         {"role": "user", "content": message}
       ]

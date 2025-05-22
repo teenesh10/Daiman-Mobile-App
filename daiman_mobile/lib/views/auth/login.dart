@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // Show error message if any
       CustomSnackBar.showFailure(
-          context, "Login Failed", "An unexpected error occurred.");
+          context, "Login Failed", "User does not exist. Register now.");
     }
   }
 
