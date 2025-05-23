@@ -1,5 +1,6 @@
 import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:daiman_mobile/views/payment/checkout_page.dart';
+import 'package:daiman_mobile/views/payment/invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:daiman_mobile/controllers/payment_controller.dart';
@@ -76,7 +77,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         );
 
         if (result == true) {
-          await paymentController.storeBookingToFirestore(
+          final bookingID = await paymentController.storeBookingToFirestore(
             selectedCourts: selectedCourts,
             date: date,
             startTime: startTime,
@@ -92,7 +93,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             'Your booking is confirmed.',
           );
 
-          Navigator.pushReplacementNamed(context, '/history');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => InvoicePage(bookingID: bookingID),
+            ),
+          );
         } else {
           CustomSnackBar.showFailure(
             context,

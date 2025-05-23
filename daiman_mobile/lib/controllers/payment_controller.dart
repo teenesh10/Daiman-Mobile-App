@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
-import 'package:daiman_mobile/models/booking.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:daiman_mobile/models/court.dart';
@@ -178,7 +177,7 @@ class PaymentController with ChangeNotifier {
     }
   }
 
-  Future<void> storeBookingToFirestore({
+  Future<String> storeBookingToFirestore({
     required String facilityID,
     required List<Court> selectedCourts,
     required DateTime date,
@@ -190,23 +189,28 @@ class PaymentController with ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     final bookingCollection = FirebaseFirestore.instance.collection('booking');
 
-    for (final court in selectedCourts) {
-      final bookingID = bookingCollection.doc().id;
+    final bookingID = bookingCollection.doc().id;
 
-      final booking = Booking(
-        bookingID: bookingID,
-        userID: user!.uid,
-        facilityID: facilityID,
-        courtID: court.courtID,
-        date: date,
-        startTime: startTime,
-        duration: duration,
-        bookingMade: DateTime.now(),
-        paymentMethod: paymentMethod,
-        amountPaid: amountPaid,
-      );
+    final booking = {
+      'bookingID': bookingID,
+      'userID': user!.uid,
+      'facilityID': facilityID,
+      'courts': selectedCourts
+          .map((court) => {
+                'courtID': court.courtID,
+                'courtName': court.courtName,
+              })
+          .toList(),
+      'date': date,
+      'startTime': startTime,
+      'duration': duration,
+      'bookingMade': DateTime.now(),
+      'paymentMethod': paymentMethod,
+      'amountPaid': amountPaid,
+    };
 
-      await bookingCollection.doc(bookingID).set(booking.toMap());
-    }
+    await bookingCollection.doc(bookingID).set(booking);
+
+    return bookingID;
   }
 }
