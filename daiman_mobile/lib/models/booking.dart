@@ -8,7 +8,9 @@ class Booking {
   DateTime date;
   DateTime startTime;
   int duration;
-  DateTime bookingMade; 
+  DateTime bookingMade;
+  String paymentMethod;
+  double amountPaid;
 
   Booking({
     required this.bookingID,
@@ -19,9 +21,10 @@ class Booking {
     required this.startTime,
     required this.duration,
     required this.bookingMade,
+    required this.paymentMethod,
+    required this.amountPaid,
   });
 
-  // Convert Booking instance to a map for Firestore
   Map<String, dynamic> toMap() {
     return {
       'bookingID': bookingID,
@@ -32,10 +35,11 @@ class Booking {
       'startTime': startTime,
       'duration': duration,
       'bookingMade': bookingMade,
+      'paymentMethod': paymentMethod,
+      'amountPaid': amountPaid,
     };
   }
 
-  // Create a Booking instance from Firestore data
   factory Booking.fromMap(Map<String, dynamic> map) {
     return Booking(
       bookingID: map['bookingID'] ?? '',
@@ -46,6 +50,8 @@ class Booking {
       startTime: (map['startTime'] as Timestamp).toDate(),
       duration: map['duration'] ?? 0,
       bookingMade: (map['bookingMade'] as Timestamp).toDate(),
+      paymentMethod: map['paymentMethod'] ?? '',
+      amountPaid: (map['amountPaid'] as num).toDouble(),
     );
   }
 }

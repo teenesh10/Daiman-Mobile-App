@@ -86,6 +86,8 @@ class PaymentController with ChangeNotifier {
           startTime: startTime,
           duration: duration,
           facilityID: facilityID,
+          paymentMethod: 'card',
+          amountPaid: totalAmountRM,
         );
 
         // 6. Show success snackbar
@@ -182,6 +184,8 @@ class PaymentController with ChangeNotifier {
     required DateTime date,
     required DateTime startTime,
     required int duration,
+    required String paymentMethod,
+    required double amountPaid,
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     final bookingCollection = FirebaseFirestore.instance.collection('booking');
@@ -198,6 +202,8 @@ class PaymentController with ChangeNotifier {
         startTime: startTime,
         duration: duration,
         bookingMade: DateTime.now(),
+        paymentMethod: paymentMethod,
+        amountPaid: amountPaid,
       );
 
       await bookingCollection.doc(bookingID).set(booking.toMap());

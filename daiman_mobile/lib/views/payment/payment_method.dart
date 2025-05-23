@@ -82,6 +82,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             startTime: startTime,
             duration: duration,
             facilityID: selectedFacility?.facilityID ?? '',
+            paymentMethod: paymentMethodStr,
+            amountPaid: totalSen / 100, // convert back to RM
           );
 
           CustomSnackBar.showSuccess(
