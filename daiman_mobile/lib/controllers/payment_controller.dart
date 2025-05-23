@@ -150,6 +150,32 @@ class PaymentController with ChangeNotifier {
     }
   }
 
+  Future<String?> createCheckoutSession({
+    required int amountSen,
+    required String currency,
+    required String paymentMethod,
+  }) async {
+    final response = await http.post(
+      Uri.parse('https://createcheckoutsession-d7u4qgi7fa-uc.a.run.app'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'amount': amountSen,
+        'currency': currency,
+        'email': FirebaseAuth.instance.currentUser?.email,
+        'paymentMethod': paymentMethod,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final url = jsonDecode(response.body)['sessionUrl'];
+      return url;
+    } else {
+      return null;
+    }
+  }
+
   Future<void> storeBookingToFirestore({
     required String facilityID,
     required List<Court> selectedCourts,

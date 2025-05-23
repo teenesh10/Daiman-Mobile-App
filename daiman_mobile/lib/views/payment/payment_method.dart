@@ -1,3 +1,5 @@
+import 'package:daiman_mobile/custom_snackbar.dart';
+import 'package:daiman_mobile/views/payment/checkout_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:daiman_mobile/controllers/payment_controller.dart';
@@ -21,7 +23,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     });
   }
 
-  void _handlePayNow() {
+  void _handlePayNow() async {
     final paymentController =
         Provider.of<PaymentController>(context, listen: false);
     final bookingController =
@@ -44,9 +46,66 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         selectedFacility?.facilityID ?? '',
         context,
       );
-    }
+    } else if (_selectedMethod == PaymentMethod.fpx ||
+        _selectedMethod == PaymentMethod.grabpay) {
+      final paymentMethodStr =
+          _selectedMethod == PaymentMethod.fpx ? 'fpx' : 'grabpay';
 
-    // FPX / GrabPay WebView will be added later
+      final totalSen = (paymentController.calculateTotalAmount(
+                selectedCourts: selectedCourts,
+                facilityRates: rates,
+                date: date!,
+                startTime: startTime!,
+                duration: duration,
+              ) *
+              100)
+          .round();
+
+      final sessionUrl = await paymentController.createCheckoutSession(
+        amountSen: totalSen,
+        currency: 'MYR',
+        paymentMethod: paymentMethodStr,
+      );
+
+      if (sessionUrl != null) {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CheckoutWebViewPage(checkoutUrl: sessionUrl),
+          ),
+        );
+
+        if (result == true) {
+          await paymentController.storeBookingToFirestore(
+            selectedCourts: selectedCourts,
+            date: date,
+            startTime: startTime,
+            duration: duration,
+            facilityID: selectedFacility?.facilityID ?? '',
+          );
+
+          CustomSnackBar.showSuccess(
+            context,
+            'Payment Successful',
+            'Your booking is confirmed.',
+          );
+
+          Navigator.pushReplacementNamed(context, '/history');
+        } else {
+          CustomSnackBar.showFailure(
+            context,
+            'Payment Cancelled',
+            'You cancelled the payment.',
+          );
+        }
+      } else {
+        CustomSnackBar.showFailure(
+          context,
+          'Session Error',
+          'Could not start checkout session.',
+        );
+      }
+    }
   }
 
   Widget _buildPaymentOption(
