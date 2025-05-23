@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/views/payment/payment_method.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
@@ -17,7 +18,7 @@ class BookingSummaryPage extends StatelessWidget {
     final startTime = bookingController.startTime;
     final duration = bookingController.duration;
     final selectedCourts = bookingController.selectedCourts;
-    final facilityRates = bookingController.rates;
+    // final facilityRates = bookingController.rates;
 
     if (selectedDate == null || startTime == null) {
       return Scaffold(
@@ -92,17 +93,11 @@ class BookingSummaryPage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Trigger the payment process directly from here
-                      final selectedFacility =
-                          bookingController.selectedFacility;
-                      paymentController.makePayment(
-                        selectedCourts,
-                        facilityRates,
-                        selectedDate,
-                        startTime,
-                        duration,
-                        selectedFacility?.facilityID ?? '',
+                      Navigator.push(
                         context,
+                        MaterialPageRoute(
+                          builder: (_) => const PaymentMethodPage(),
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
