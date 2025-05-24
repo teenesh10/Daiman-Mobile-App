@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:daiman_mobile/home_page.dart';
 import 'package:daiman_mobile/views/booking/booking.dart';
 import 'package:daiman_mobile/views/booking/booking_history.dart';
@@ -7,15 +5,35 @@ import 'package:daiman_mobile/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+// Wrapper to pass initial index
+class NavBarWrapper extends StatelessWidget {
+  final int initialIndex;
+
+  const NavBarWrapper({super.key, this.initialIndex = 0});
+
+  @override
+  Widget build(BuildContext context) {
+    return NavBar(initialIndex: initialIndex);
+  }
+}
+
 class NavBar extends StatefulWidget {
-  const NavBar({super.key});
+  final int initialIndex;
+
+  const NavBar({super.key, this.initialIndex = 0});
 
   @override
   _NavBarState createState() => _NavBarState();
 }
 
 class _NavBarState extends State<NavBar> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -33,7 +51,6 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Set the background color to transparent so it matches the home page
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: IndexedStack(
@@ -43,15 +60,14 @@ class _NavBarState extends State<NavBar> {
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          color: Colors.white, // Background color for the bottom nav
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(0)), // Rounded corners
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26, // Shadow color
-              offset: Offset(0, -1), // Shadow position
-              blurRadius: 1.0, // Shadow blur radius
-              spreadRadius: 1.0, // Shadow spread radius
+              color: Colors.black26,
+              offset: Offset(0, -1),
+              blurRadius: 1.0,
+              spreadRadius: 1.0,
             ),
           ],
         ),
@@ -66,11 +82,11 @@ class _NavBarState extends State<NavBar> {
               color: Colors.black,
               activeColor: Colors.white,
               iconSize: 24,
-              tabBackgroundColor:
-                  Colors.blueAccent, // Color for the active tab background
+              tabBackgroundColor: Colors.blueAccent,
               duration: const Duration(milliseconds: 400),
               rippleColor: Colors.white54,
               onTabChange: _onItemTapped,
+              selectedIndex: _selectedIndex,
               tabs: const [
                 GButton(
                   icon: Icons.home,

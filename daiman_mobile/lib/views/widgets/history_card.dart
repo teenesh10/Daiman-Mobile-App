@@ -49,7 +49,7 @@ class BookingCard extends StatelessWidget {
             'Court: $court',
             style: const TextStyle(
               fontSize: 14,
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 4),
@@ -57,7 +57,7 @@ class BookingCard extends StatelessWidget {
             'Date: $date',
             style: const TextStyle(
               fontSize: 14,
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 4),
@@ -65,7 +65,7 @@ class BookingCard extends StatelessWidget {
             'Start Time: $startTime',
             style: const TextStyle(
               fontSize: 14,
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 4),
@@ -73,7 +73,7 @@ class BookingCard extends StatelessWidget {
             'Duration: $duration',
             style: const TextStyle(
               fontSize: 14,
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ),
         ],

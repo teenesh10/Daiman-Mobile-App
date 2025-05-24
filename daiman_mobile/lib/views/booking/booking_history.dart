@@ -7,20 +7,15 @@ class BookingHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white, // AppBar background color
-        elevation: 0, // No shadow for the AppBar
-        automaticallyImplyLeading: false, // Hides the back button
-      ),
-      body: Container(
-        color: Colors.white, // Set a white background
+      body: SafeArea(
         child: DefaultTabController(
           length: 2,
           child: Column(
             children: [
               Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white, // TabBar background color
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.4),
@@ -32,27 +27,23 @@ class BookingHistoryPage extends StatelessWidget {
                 ),
                 child: const TabBar(
                   indicator: BoxDecoration(
-                    color: Colors.blueAccent, // Indicator color
-                    // Make the indicator expand to each tab's width
-                    borderRadius: BorderRadius.zero,
+                    color: Colors.blueAccent,
                   ),
-                  labelColor: Colors.white, // Active tab text color
-                  unselectedLabelColor:
-                      Colors.blueAccent, // Inactive tab text color
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.blueAccent,
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   tabs: [
-                    Tab(text: 'Upcoming'), // First tab
-                    Tab(text: 'Past'), // Second tab
+                    Tab(text: 'Upcoming'),
+                    Tab(text: 'Past'),
                   ],
-                  indicatorSize: TabBarIndicatorSize
-                      .tab, // Makes the indicator expand to the tab size
+                  indicatorSize: TabBarIndicatorSize.tab,
                 ),
               ),
               const Expanded(
                 child: TabBarView(
                   children: [
-                    BookingHistoryTab(isUpcoming: true), // Upcoming bookings
-                    BookingHistoryTab(isUpcoming: false), // Past bookings
+                    BookingHistoryTab(isUpcoming: true),
+                    BookingHistoryTab(isUpcoming: false),
                   ],
                 ),
               ),

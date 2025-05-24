@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -93,8 +94,8 @@ class _InvoicePageState extends State<InvoicePage> {
     final paymentMethod = data['paymentMethod'];
     final amountPaid = data['amountPaid'];
 
-    return WillPopScope(
-      onWillPop: () async => false, // Disable back button
+    return PopScope(
+      canPop: false, // Disable back button
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Booking Invoice"),
@@ -203,7 +204,14 @@ class _InvoicePageState extends State<InvoicePage> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/history');
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const NavBarWrapper(initialIndex: 2),
+                      ),
+                      (route) => false,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
