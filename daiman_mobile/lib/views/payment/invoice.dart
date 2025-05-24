@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class InvoicePage extends StatefulWidget {
   final String bookingID;
@@ -12,6 +13,7 @@ class InvoicePage extends StatefulWidget {
 
 class _InvoicePageState extends State<InvoicePage> {
   DocumentSnapshot? bookingData;
+  String? facilityName;
   bool isLoading = true;
 
   @override
@@ -21,15 +23,50 @@ class _InvoicePageState extends State<InvoicePage> {
   }
 
   Future<void> _loadBooking() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('booking')
-        .doc(widget.bookingID)
-        .get();
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('booking')
+          .doc(widget.bookingID)
+          .get();
 
-    setState(() {
-      bookingData = doc;
-      isLoading = false;
-    });
+      if (!doc.exists) {
+        setState(() {
+          bookingData = null;
+          isLoading = false;
+        });
+        return;
+      }
+
+      final data = doc.data() as Map<String, dynamic>;
+
+      // Fetch facility name from facilityID
+      final facilityDoc = await FirebaseFirestore.instance
+          .collection('facility')
+          .doc(data['facilityID'])
+          .get();
+
+      setState(() {
+        bookingData = doc;
+        facilityName = facilityDoc.exists
+            ? facilityDoc['facilityName'] ?? 'Unknown Facility'
+            : 'Unknown Facility';
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle error gracefully
+      setState(() {
+        bookingData = null;
+        isLoading = false;
+      });
+    }
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  String formatTime(DateTime time) {
+    return DateFormat('h:mm a').format(time);
   }
 
   @override
@@ -48,54 +85,152 @@ class _InvoicePageState extends State<InvoicePage> {
 
     final data = bookingData!.data() as Map<String, dynamic>;
 
-    final courts = (data['courts'] as List<dynamic>).cast<Map<String, dynamic>>();
+    final courts =
+        (data['courts'] as List<dynamic>).cast<Map<String, dynamic>>();
     final date = (data['date'] as Timestamp).toDate();
     final startTime = (data['startTime'] as Timestamp).toDate();
     final duration = data['duration'];
     final paymentMethod = data['paymentMethod'];
     final amountPaid = data['amountPaid'];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Invoice'),
-        automaticallyImplyLeading: false, // no back button
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Booking ID: ${widget.bookingID}', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-
-            Text('Facility ID: ${data['facilityID']}'),
-            const SizedBox(height: 8),
-
-            Text('Date: ${date.toLocal().toString().split(' ')[0]}'),
-            Text('Start Time: ${startTime.toLocal().hour}:${startTime.toLocal().minute.toString().padLeft(2, '0')}'),
-            Text('Duration: $duration hours'),
-            const SizedBox(height: 16),
-
-            Text('Courts Booked:', style: TextStyle(fontWeight: FontWeight.bold)),
-            ...courts.map((court) => Text('- ${court['courtName'] ?? court['courtID']}')),
-            const SizedBox(height: 16),
-
-            Text('Payment Method: ${paymentMethod.toUpperCase()}'),
-            Text('Amount Paid: RM ${amountPaid.toStringAsFixed(2)}'),
-            const Spacer(),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/history');
-                },
-                child: const Text('Confirm'),
+    return WillPopScope(
+      onWillPop: () async => false, // Disable back button
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Booking Invoice"),
+          centerTitle: true,
+          automaticallyImplyLeading: false, // no back button
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 24, horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Booking ID',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.grey[700]),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(widget.bookingID,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w600)),
+                          const Divider(height: 24, thickness: 1),
+                          Text(
+                            'Facility',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.grey[700]),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(facilityName ?? 'Loading...',
+                              style: const TextStyle(fontSize: 14)),
+                          const Divider(height: 24, thickness: 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _labelValue('Date', formatDate(date)),
+                              _labelValue('Start Time', formatTime(startTime)),
+                              _labelValue('Duration', '$duration hours'),
+                            ],
+                          ),
+                          const Divider(height: 24, thickness: 1),
+                          Text(
+                            'Courts Booked',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.grey[700]),
+                          ),
+                          const SizedBox(height: 8),
+                          ...courts.map(
+                            (court) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '- ${court['courtName'] ?? court['courtID']}',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ),
+                          const Divider(height: 24, thickness: 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _labelValue('Payment Method',
+                                  paymentMethod.toString().toUpperCase()),
+                              _labelValue('Amount Paid',
+                                  'RM ${amountPaid.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            )
-          ],
+
+              const SizedBox(height: 16),
+
+              // Screenshot reminder text
+              Text(
+                'Please screenshot the invoice as proof to show if you have any problem with your booking.',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                    fontStyle: FontStyle.italic),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Confirm button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/history');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: const Text('Confirm', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _labelValue(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Colors.grey[600])),
+        const SizedBox(height: 2),
+        Text(value, style: const TextStyle(fontSize: 14)),
+      ],
     );
   }
 }
