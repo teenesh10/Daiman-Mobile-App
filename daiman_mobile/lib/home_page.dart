@@ -1,3 +1,5 @@
+import 'package:daiman_mobile/about.dart';
+import 'package:daiman_mobile/views/widgets/card_design.dart';
 import 'package:daiman_mobile/views/widgets/curved_shape.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
 import 'package:daiman_mobile/views/widgets/heading.dart';
@@ -52,51 +54,69 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CustomShapeWidget(
-              child: SizedBox(
-                height: 250,
-                child: ClipPath(
-                  clipper: CurvedShape(),
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _images.length,
-                    itemBuilder: (context, index) {
-                      return Image.asset(
-                        _images[index],
-                        fit: BoxFit.cover,
-                      );
-                    },
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomShapeWidget(
+                child: SizedBox(
+                  height: 250,
+                  child: ClipPath(
+                    clipper: CurvedShape(),
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: _images.length,
+                      itemBuilder: (context, index) {
+                        return Image.asset(
+                          _images[index],
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  HomeAppBar(),
-                  const SizedBox(height: 25.0),
-                  const SearchContainer(),
-                  const SizedBox(height: 32.0),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: Column(
-                      children: [
-                        SectionHeading(
-                          title: "About Us",
-                        ),
-                      ],
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    HomeAppBar(),
+                    const SizedBox(height: 25.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SearchContainer(),
+                          const SizedBox(height: 32.0),
+                          const SectionHeading(
+                            title: "About Us",
+                            headingStyle: 'medium',
+                          ),
+                          const SizedBox(height: 10),
+                          CustomCard(
+                            imageUrl: 'assets/images/img1.jpg',
+                            title:
+                                'Daiman Sports Facility offers high-quality courts and services for all sport lovers. Enjoy top-tier amenities and friendly support to elevate your game.',
+                            onReadMore: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AboutUsPage(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

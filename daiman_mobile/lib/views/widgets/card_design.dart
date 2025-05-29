@@ -3,85 +3,68 @@ import 'package:flutter/material.dart';
 class CustomCard extends StatelessWidget {
   final String imageUrl;
   final String title;
+  final VoidCallback? onReadMore;
 
   const CustomCard({
     super.key,
     required this.imageUrl,
     required this.title,
+    this.onReadMore,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 200, // Set a fixed width for the card
-      margin: const EdgeInsets.symmetric(
-          horizontal: 8.0, vertical: 8.0), // Added vertical margin
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       decoration: BoxDecoration(
-        borderRadius:
-            BorderRadius.circular(15), // Rounded corners for the entire card
-        color: Colors.white, // Background color for the card
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Shadow color
-            blurRadius: 8, // Shadow blur radius
-            offset: const Offset(0, 4), // Offset for shadow
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: Colors.black
-                .withOpacity(0.1), // Additional shadow for the bottom
-            blurRadius: 8, // Blur radius for bottom shadow
-            offset: const Offset(
-                0, 2), // Adjust this to create a softer bottom shadow
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         children: [
-          // Image section with gray background
+          // Image section
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(15)), // Rounded corners only at the top
-            child: Container(
-              width: double.infinity, // Make it full width
-              height: 160, // Increased height for the image section
-              color: Colors.grey[300], // Gray background for the image section
-              child: const Center(
-                child: Text(
-                  'Placeholder', // Placeholder text or an image can go here
-                  style: TextStyle(color: Colors.white, fontSize: 24),
-                ),
-              ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+            child: Image.asset(
+              imageUrl,
+              width: double.infinity,
+              height: 160,
+              fit: BoxFit.fill,
             ),
           ),
-          // Title and button section
+          // Title and Read More
           Padding(
-            padding: const EdgeInsets.all(
-                10.0), // Padding around the title and button
+            padding: const EdgeInsets.all(10.0),
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to the left
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  title.length > 100 ? '${title.substring(0, 100)}...' : title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                const SizedBox(
-                    height: 4), // Spacing between title and "Read More"
+                const SizedBox(height: 4),
                 GestureDetector(
-                  onTap: () {
-                    // Handle "Read More" action here
-                  },
+                  onTap: onReadMore,
                   child: const Text(
                     'Read More',
                     style: TextStyle(
-                      color: Colors
-                          .blue, // Change color to indicate it's clickable
+                      color: Colors.blue,
                       fontSize: 16,
-                      decoration: TextDecoration
-                          .none, // No underline for the link effect
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),

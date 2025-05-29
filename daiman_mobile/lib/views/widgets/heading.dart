@@ -20,20 +20,28 @@ class SectionHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the text theme from the context
-    final textTheme = Theme.of(context).textTheme;
 
     // Set the appropriate text style based on headingStyle
     TextStyle headingTextStyle;
     switch (headingStyle) {
       case 'medium':
-        headingTextStyle = textTheme.displayMedium!;
+        headingTextStyle = TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        );
         break;
       case 'small':
-        headingTextStyle = textTheme.displaySmall!;
+        headingTextStyle = TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        );
         break;
       case 'large':
       default:
-        headingTextStyle = textTheme.displayLarge!;
+        headingTextStyle = TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        );
     }
 
     return Row(
@@ -42,7 +50,8 @@ class SectionHeading extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: headingTextStyle.copyWith(color: textColor), // Apply the text style
+            style: headingTextStyle.copyWith(
+                color: textColor), // Apply the text style
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
