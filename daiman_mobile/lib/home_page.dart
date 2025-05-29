@@ -1,4 +1,3 @@
-import 'package:daiman_mobile/views/widgets/card_design.dart';
 import 'package:daiman_mobile/views/widgets/curved_shape.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
 import 'package:daiman_mobile/views/widgets/heading.dart';
@@ -56,7 +55,6 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Curved widget wrapping the image carousel
             CustomShapeWidget(
               child: SizedBox(
                 height: 250,
@@ -75,7 +73,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // White section for remaining content
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -91,35 +88,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         SectionHeading(
-                          title: "Events",
-                          showActionButton: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Wrap ListView in a SizedBox to prevent infinite height
-                  SizedBox(
-                    height:
-                        250, // Set a fixed height to contain the horizontal ListView
-                    child: ListView(
-                      scrollDirection: Axis
-                          .horizontal, // Set to horizontal to display in a row
-                      children: const [
-                        CustomCard(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          title: 'Card Title 1',
-                        ),
-                        CustomCard(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          title: 'Card Title 2',
-                        ),
-                        CustomCard(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          title: 'Card Title 3',
-                        ),
-                        CustomCard(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          title: 'Card Title 4',
+                          title: "About Us",
                         ),
                       ],
                     ),
@@ -134,13 +103,11 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.pushNamed(context, '/chat');
         },
-        backgroundColor: Colors.blueAccent, // Example robot icon
+        backgroundColor: Colors.blueAccent,
         tooltip: 'Chatbot',
-        child: const Icon(Icons.android,
-            color: Colors.white), // Tooltip when hovering over the button
+        child: const Icon(Icons.android, color: Colors.white),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.endFloat, // Default location
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

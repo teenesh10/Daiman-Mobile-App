@@ -1,4 +1,7 @@
 import 'package:daiman_mobile/controllers/auth_controller.dart';
+import 'package:daiman_mobile/views/profile/privacy.dart';
+import 'package:daiman_mobile/views/profile/settings.dart';
+import 'package:daiman_mobile/views/profile/terms.dart';
 import 'package:daiman_mobile/views/widgets/confirmation_dialog.dart';
 import 'package:daiman_mobile/views/widgets/profile_menu.dart';
 import 'package:flutter/material.dart';
@@ -68,21 +71,31 @@ class ProfilePage extends StatelessWidget {
                       ProfileMenuWidget(
                           title: "Settings",
                           icon: Icons.settings,
-                          onPress: () {}),
-                      ProfileMenuWidget(
-                          title: "Billing Details",
-                          icon: Icons.account_balance_wallet,
-                          onPress: () {}),
-                      ProfileMenuWidget(
-                          title: "User Management",
-                          icon: Icons.verified_user,
-                          onPress: () {}),
+                          onPress: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const SettingsPage(),
+                            ));
+                          }),
                       const Divider(),
                       const SizedBox(height: 10),
                       ProfileMenuWidget(
+                        title: "Privacy Policy",
+                        icon: Icons.privacy_tip,
+                        onPress: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const PrivacyPolicyPage(),
+                          ));
+                        },
+                      ),
+                      ProfileMenuWidget(
                           title: "Terms & Conditions",
                           icon: Icons.info,
-                          onPress: () {}),
+                          onPress: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => const TermsConditionsPage()),
+                            );
+                          }),
                       ProfileMenuWidget(
                         title: "Logout",
                         icon: Icons.logout,

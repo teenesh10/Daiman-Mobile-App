@@ -6,49 +6,57 @@ class BookingHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: DefaultTabController(
-          length: 2,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 2,
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const TabBar(
-                  indicator: BoxDecoration(
-                    color: Colors.blueAccent,
-                  ),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.blueAccent,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  tabs: [
-                    Tab(text: 'Upcoming'),
-                    Tab(text: 'Past'),
-                  ],
-                  indicatorSize: TabBarIndicatorSize.tab,
-                ),
-              ),
-              const Expanded(
-                child: TabBarView(
-                  children: [
-                    BookingHistoryTab(isUpcoming: true),
-                    BookingHistoryTab(isUpcoming: false),
-                  ],
-                ),
-              ),
-            ],
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.blueAccent,
+          title: const Text(
+            'Booking History',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
+          centerTitle: true,
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1.0),
+            child: Container(
+              color: Colors.white,
+              height: 1.0,
+            ),
+          ),
+        ),
+        body: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              child: const TabBar(
+                indicator: BoxDecoration(
+                  color: Colors.blueAccent,
+                ),
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.blueAccent,
+                labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                tabs: [
+                  Tab(text: 'Upcoming'),
+                  Tab(text: 'Past'),
+                ],
+                indicatorSize: TabBarIndicatorSize.tab,
+              ),
+            ),
+            const Expanded(
+              child: TabBarView(
+                children: [
+                  BookingHistoryTab(isUpcoming: true),
+                  BookingHistoryTab(isUpcoming: false),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
