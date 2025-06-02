@@ -25,13 +25,21 @@ class CourtListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Select Courts"),
+        title: const Text(
+          "Select Courts",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.blueAccent,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Price Information and Live Availability Link
           Stack(
             children: [
               Padding(
@@ -83,8 +91,6 @@ class CourtListPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-
-          // Court Selection List
           Expanded(
             child: Consumer<BookingController>(
               builder: (context, controller, child) {
@@ -168,7 +174,6 @@ class CourtListPage extends StatelessWidget {
             ),
           ),
 
-          // Confirm Button
           Consumer<BookingController>(
             builder: (context, controller, _) {
               return Padding(

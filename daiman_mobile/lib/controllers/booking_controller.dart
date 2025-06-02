@@ -177,18 +177,17 @@ class BookingController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<int> getUpcomingBookingCount() async {
+  Stream<int> getUpcomingBookingCount() {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return 0;
+    if (user == null) return Stream.value(0);
 
     final now = DateTime.now();
 
-    final snapshot = await FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('booking')
         .where('userID', isEqualTo: user.uid)
         .where('startTime', isGreaterThan: Timestamp.fromDate(now))
-        .get();
-
-    return snapshot.docs.length;
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 }

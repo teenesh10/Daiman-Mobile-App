@@ -38,7 +38,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _addMessage(userMessage);
 
-    // Check if the text matches any predefined keywords
     String? response = _getKeywordResponse(text);
 
     if (response == null) {
@@ -60,7 +59,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   String? _getKeywordResponse(String text) {
-    // Normalize input text and check for keywords
     final normalizedText = text.toLowerCase();
     for (final keyword in keywordResponses.keys) {
       if (normalizedText.contains(keyword)) {
@@ -93,7 +91,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    // Add welcome message
     _addMessage(
       types.TextMessage(
         author: _bot,
@@ -107,7 +104,19 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("AI Chatbot")),
+      appBar: AppBar(
+        title: const Text(
+          "AI Chatbot",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.blueAccent,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
       body: Column(
         children: [
           if (_showCategories)

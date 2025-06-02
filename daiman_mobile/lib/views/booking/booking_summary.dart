@@ -11,14 +11,11 @@ class BookingSummaryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final paymentController = Provider.of<PaymentController>(context);
     final bookingController = Provider.of<BookingController>(context);
-
-    // Ensure these fields are not null
     final selectedFacility = bookingController.selectedFacility;
     final selectedDate = bookingController.selectedDate;
     final startTime = bookingController.startTime;
     final duration = bookingController.duration;
     final selectedCourts = bookingController.selectedCourts;
-    // final facilityRates = bookingController.rates;
 
     if (selectedDate == null || startTime == null) {
       return Scaffold(
@@ -45,7 +42,14 @@ class BookingSummaryPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Booking Summary"),
+        title: const Text(
+          "Booking Summary",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.blueAccent,
       ),
@@ -83,8 +87,7 @@ class BookingSummaryPage extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(
-                          context); // Navigate back to court selection
+                      Navigator.pop(context);
                     },
                     child: const Text("Cancel"),
                   ),

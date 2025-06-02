@@ -2,7 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daiman_mobile/views/widgets/facility_button.dart';
-import 'package:daiman_mobile/views/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 
 class FacilityListPage extends StatefulWidget {
@@ -13,25 +12,28 @@ class FacilityListPage extends StatefulWidget {
 }
 
 class _FacilityListPageState extends State<FacilityListPage> {
-  int? _selectedFacilityIndex; // Track the selected facility index
+  int? _selectedFacilityIndex;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Facilities'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+        title: const Text(
+          'Facilities',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Colors.blueAccent,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            const SearchContainer(),
             const SizedBox(height: 20),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(

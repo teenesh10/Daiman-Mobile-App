@@ -17,21 +17,21 @@ class HomeAppBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(6), // Padding inside the circle
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.black, // Black border color
-                width: 1, // Border thickness
+                color: Colors.black,
+                width: 1,
               ),
             ),
             child: const Icon(
               Icons.person_outline,
               color: Colors.black,
-              size: 20, // Adjust icon size
+              size: 20,
             ),
           ),
-          const SizedBox(width: 8), // Space between the icon and text
+          const SizedBox(width: 8),
           FutureBuilder<Map<String, dynamic>?>(
             future: _authController.getUserData(),
             builder: (context, snapshot) {
@@ -61,15 +61,14 @@ class HomeAppBar extends StatelessWidget {
                     const Text(
                       'Welcome back!',
                       style: TextStyle(
-                        color: Colors.grey, // Set the color of the title text
+                        color: Colors.grey,
                         fontSize: 14,
                       ),
                     ),
                     Text(
                       snapshot.data!['username'] ?? 'User',
                       style: const TextStyle(
-                        color:
-                            Colors.black, // Set the color of the subtitle text
+                        color: Colors.black,
                         fontSize: 16,
                       ),
                     ),
@@ -81,8 +80,8 @@ class HomeAppBar extends StatelessWidget {
         ],
       ),
       actions: [
-        FutureBuilder<int>(
-          future: _bookingController.getUpcomingBookingCount(),
+        StreamBuilder<int>(
+          stream: _bookingController.getUpcomingBookingCount(),
           builder: (context, snapshot) {
             int count = snapshot.data ?? 0;
             return Stack(

@@ -54,7 +54,6 @@ class _InvoicePageState extends State<InvoicePage> {
         isLoading = false;
       });
     } catch (e) {
-      // Handle error gracefully
       setState(() {
         bookingData = null;
         isLoading = false;
@@ -98,7 +97,13 @@ class _InvoicePageState extends State<InvoicePage> {
       canPop: false, // Disable back button
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Booking Invoice"),
+          title: const Text(
+            "Booking Invoice",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           centerTitle: true,
           automaticallyImplyLeading: false, // no back button
         ),
@@ -183,10 +188,7 @@ class _InvoicePageState extends State<InvoicePage> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              // Screenshot reminder text
               Text(
                 'Please screenshot the invoice as proof to show if you have any problem with your booking.',
                 style: TextStyle(
@@ -195,10 +197,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     fontStyle: FontStyle.italic),
                 textAlign: TextAlign.center,
               ),
-
               const SizedBox(height: 24),
-
-              // Confirm button
               SizedBox(
                 width: double.infinity,
                 height: 48,

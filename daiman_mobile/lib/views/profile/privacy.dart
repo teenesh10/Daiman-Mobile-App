@@ -6,15 +6,23 @@ class PrivacyPolicyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Privacy Policy")),
+      appBar: AppBar(
+        title: const Text(
+          "Privacy Policy",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.blueAccent,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: const [
-            Text(
-              "Privacy Policy",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
             SizedBox(height: 16),
             Text(
               "This app collects user information such as name and email address for the purpose of managing facility bookings. We respect your privacy and ensure your data is not shared with third parties without your consent.",

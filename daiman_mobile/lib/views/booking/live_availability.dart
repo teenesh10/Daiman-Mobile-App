@@ -61,23 +61,20 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
     TimeOfDay current = const TimeOfDay(hour: 8, minute: 0);
     const int interval = timeslotIntervalMinutes;
 
-    // Set starting time to next available 30-min slot if today
     if (isToday) {
       final nextSlot = _getNextHalfHourSlot(now);
       current = TimeOfDay(hour: nextSlot.hour, minute: nextSlot.minute);
     }
 
-    // Keep generating slots until we pass 2:00 AM
     while (true) {
       slots.add(current);
 
       if (current.hour == 2 && current.minute == 0) {
-        break; // Stop once we’ve added 2:00 AM
+        break;
       }
 
       current = _addMinutesToTimeOfDay(current, interval);
 
-      // Safety break if somehow stuck in loop
       if (slots.length > 100) break;
     }
 
@@ -137,10 +134,23 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
     final filteredTimeslots = timeslots;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Live Availability")),
+      appBar: AppBar(
+        title: const Text(
+          "Live Availability",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.blueAccent,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
@@ -151,8 +161,6 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
               ],
             ),
           ),
-
-          // 🔹 Table
           Expanded(
             child: isLoadingCourts
                 ? const Center(child: CircularProgressIndicator())
