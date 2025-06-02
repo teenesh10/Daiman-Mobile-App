@@ -188,9 +188,13 @@ class PaymentController with ChangeNotifier {
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     final bookingCollection = FirebaseFirestore.instance.collection('booking');
+    final batch = FirebaseFirestore.instance.batch();
 
+    // 1. Generate booking ID
     final bookingID = bookingCollection.doc().id;
+    final bookingRef = bookingCollection.doc(bookingID);
 
+    // 2. Prepare booking data
     final booking = {
       'bookingID': bookingID,
       'userID': user!.uid,
@@ -201,15 +205,32 @@ class PaymentController with ChangeNotifier {
                 'courtName': court.courtName,
               })
           .toList(),
-      'date': date,
-      'startTime': startTime,
+      'date': Timestamp.fromDate(date),
+      'startTime': Timestamp.fromDate(startTime),
       'duration': duration,
-      'bookingMade': DateTime.now(),
+      'bookingMade': Timestamp.now(),
       'paymentMethod': paymentMethod,
       'amountPaid': amountPaid,
     };
 
-    await bookingCollection.doc(bookingID).set(booking);
+    // 3. Add booking to Firestore
+    batch.set(bookingRef, booking);
+
+    // 4. Update court availability status
+    for (final court in selectedCourts) {
+      final courtRef = FirebaseFirestore.instance
+          .collection('facility')
+          .doc(facilityID)
+          .collection('court')
+          .doc(court.courtID);
+
+      batch.update(courtRef, {
+        'availability': false, // Mark court as unavailable
+      });
+    }
+
+    // 5. Commit all changes as a batch
+    await batch.commit();
 
     return bookingID;
   }

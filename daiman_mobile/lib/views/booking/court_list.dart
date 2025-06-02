@@ -63,7 +63,16 @@ class CourtListPage extends StatelessWidget {
                 right: 25,
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, '/live_availability');
+                    print(
+                        "Navigating to /live with facilityID: $facilityID and date: $date");
+                    Navigator.pushNamed(
+                      context,
+                      '/live',
+                      arguments: {
+                        'facilityID': facilityID,
+                        'date': date,
+                      },
+                    );
                   },
                   child: const Text(
                     "View Live Availability",
@@ -133,6 +142,7 @@ class CourtListPage extends StatelessWidget {
                 }
 
                 final courts = snapshot.data!;
+                courts.sort((a, b) => a.courtName.compareTo(b.courtName));
 
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

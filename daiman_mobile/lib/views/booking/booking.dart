@@ -230,11 +230,6 @@ class _BookingPageState extends State<BookingPage> {
 
   String _getValidationMessage() {
     if (selectedDate == null) return "Please select a date.";
-    if (selectedTime == null) {
-      print("Selected Time is null: $selectedTime"); // Debugging log
-      return "Please select a time.";
-    }
-    if (selectedDuration == null) return "Please select a duration.";
     if (Provider.of<BookingController>(context, listen: false)
             .selectedFacility ==
         null) {

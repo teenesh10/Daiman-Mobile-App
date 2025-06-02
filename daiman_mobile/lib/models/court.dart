@@ -14,7 +14,12 @@ class Court {
   });
 
   factory Court.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final rawData = doc.data();
+    if (rawData == null) {
+      throw StateError("Missing court data for document ${doc.id}");
+    }
+
+    final data = rawData as Map<String, dynamic>;
     return Court(
       courtID: doc.id,
       courtName: data['courtName'] ?? '',

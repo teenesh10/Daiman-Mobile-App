@@ -4,7 +4,7 @@ class Booking {
   String bookingID;
   String userID;
   String facilityID;
-  String courtID;
+  List<Map<String, dynamic>> courts;
   DateTime date;
   DateTime startTime;
   int duration;
@@ -16,7 +16,7 @@ class Booking {
     required this.bookingID,
     required this.userID,
     required this.facilityID,
-    required this.courtID,
+    required this.courts,
     required this.date,
     required this.startTime,
     required this.duration,
@@ -30,11 +30,11 @@ class Booking {
       'bookingID': bookingID,
       'userID': userID,
       'facilityID': facilityID,
-      'courtID': courtID,
-      'date': date,
-      'startTime': startTime,
+      'courts': courts,
+      'date': Timestamp.fromDate(date),
+      'startTime': Timestamp.fromDate(startTime),
       'duration': duration,
-      'bookingMade': bookingMade,
+      'bookingMade': Timestamp.fromDate(bookingMade),
       'paymentMethod': paymentMethod,
       'amountPaid': amountPaid,
     };
@@ -45,7 +45,7 @@ class Booking {
       bookingID: map['bookingID'] ?? '',
       userID: map['userID'] ?? '',
       facilityID: map['facilityID'] ?? '',
-      courtID: map['courtID'] ?? '',
+      courts: List<Map<String, dynamic>>.from(map['courts'] ?? []),
       date: (map['date'] as Timestamp).toDate(),
       startTime: (map['startTime'] as Timestamp).toDate(),
       duration: map['duration'] ?? 0,

@@ -4,143 +4,131 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookingController with ChangeNotifier {
-  List<Facility> facilities = []; // List of facilities
-  Facility? selectedFacility; // The currently selected facility
-  List<Court> courts = []; // All courts in the selected facility
+  List<Facility> facilities = [];
+  Facility? selectedFacility;
   List<Court> selectedCourts = [];
-  Map<String, double> rates = {}; // Facility rates
-  List<Court> _cachedAvailableCourts = [];
+  Map<String, double> rates = {};
 
-  DateTime? selectedDate; // Selected date
-  DateTime? startTime; // Selected start time
-  int duration = 1; // Selected duration, default is 1 hour
+  DateTime? selectedDate;
+  DateTime? startTime;
+  int duration = 1;
 
   BookingController() {
-    _fetchFacilities(); // Fetch facilities when the controller is initialized
+    _fetchFacilities();
   }
 
-  // Fetch facilities from Firestore
+  /// Fetch all facilities from Firestore
   Future<void> _fetchFacilities() async {
     try {
-      final QuerySnapshot snapshot =
+      final snapshot =
           await FirebaseFirestore.instance.collection('facility').get();
-      facilities =
-          snapshot.docs.map((doc) => Facility.fromFirestore(doc)).toList();
-      notifyListeners(); // Notify listeners to update UI
+      facilities = snapshot.docs.map(Facility.fromFirestore).toList();
+      notifyListeners();
     } catch (e) {
       print('Error fetching facilities: $e');
     }
   }
 
-  // Select a facility and fetch its rates
+  /// Handle facility selection and initialize rates
   void selectFacility(Facility facility) {
     selectedFacility = facility;
-    // Clear previous rates before fetching new ones
-    rates = {
-      'weekdayRateBefore6': 0.0,
-      'weekdayRateAfter6': 0.0,
-      'weekendRateBefore6': 0.0,
-      'weekendRateAfter6': 0.0,
-    };
+    selectedCourts.clear();
+    rates.clear();
     _fetchFacilityRates(facility.facilityID);
-    notifyListeners(); // Notify listeners to update UI
+    notifyListeners();
   }
 
-  // Fetch all courts for the selected facility
-  Future<void> fetchCourts(String facilityId) async {
-    try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('facility')
-          .doc(facilityId)
-          .collection('court')
-          .get();
-      courts = snapshot.docs.map((doc) => Court.fromFirestore(doc)).toList();
-      notifyListeners(); // Notify listeners to update UI
-    } catch (e) {
-      print('Error fetching courts: $e');
-    }
+  /// Fetch courts under a specific facility
+  Future<List<Court>> fetchCourts(String facilityId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('facility')
+        .doc(facilityId)
+        .collection('court')
+        .get();
+
+    return snapshot.docs.map(Court.fromFirestore).toList();
   }
 
-  // Fetch available courts based on date, start time, and duration
-  Future<List<Court>> fetchAvailableCourts(String facilityID, DateTime date,
-      DateTime startTime, int duration) async {
-    if (_cachedAvailableCourts.isNotEmpty) {
-      return _cachedAvailableCourts; // Return cached courts if already fetched
-    }
+  Future<List<Court>> fetchAvailableCourts(
+    String facilityID,
+    DateTime date,
+    DateTime startTime,
+    int duration,
+  ) async {
     try {
-      print('Fetching courts for facility: $facilityID');
-      final onlyDate = DateTime(date.year, date.month, date.day);
-      final snapshot = await FirebaseFirestore.instance
-          .collection('facility')
-          .doc(facilityID)
-          .collection('court')
-          .get();
+      final allCourts = await fetchCourts(facilityID);
 
-      final allCourts =
-          snapshot.docs.map((doc) => Court.fromFirestore(doc)).toList();
-
-      final bookingsSnapshot = await FirebaseFirestore.instance
+      // Get bookings matching facility and date
+      final bookingSnapshot = await FirebaseFirestore.instance
           .collection('booking')
           .where('facilityID', isEqualTo: facilityID)
-          .where('date', isEqualTo: Timestamp.fromDate(onlyDate))
+          .where('date', isEqualTo: Timestamp.fromDate(date))
           .get();
 
-      if (bookingsSnapshot.docs.isEmpty) {
-        _cachedAvailableCourts = allCourts;
-        return _cachedAvailableCourts;
+      bool overlaps(
+          DateTime aStart, DateTime aEnd, DateTime bStart, DateTime bEnd) {
+        return aStart.isBefore(bEnd) && aEnd.isAfter(bStart);
       }
 
-      final bookedCourts = bookingsSnapshot.docs.map((doc) {
-        DateTime bookedStartTime = (doc['startTime'] as Timestamp).toDate();
-        int bookedDuration = doc['duration'];
-        DateTime bookedEndTime =
-            bookedStartTime.add(Duration(hours: bookedDuration));
+      final selectedStart = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        startTime.hour,
+        startTime.minute,
+      );
+      final selectedEnd = selectedStart.add(Duration(hours: duration));
 
-        bool isOverlap = (startTime.isBefore(bookedEndTime) &&
-            startTime.add(Duration(hours: duration)).isAfter(bookedStartTime));
+      final bookedCourtIDs = bookingSnapshot.docs
+          .where((doc) {
+            final data = doc.data();
+            final bookedStart = (data['startTime'] as Timestamp).toDate();
+            final bookedDuration = data['duration'] ?? 1;
+            final bookedEnd = bookedStart.add(Duration(hours: bookedDuration));
 
-        return {
-          'courtID': doc['courtID'] as String,
-          'isOverlap': isOverlap,
-        };
-      }).toList();
+            return overlaps(selectedStart, selectedEnd, bookedStart, bookedEnd);
+          })
+          .expand((doc) => List<Map<String, dynamic>>.from(doc['courts'] ?? [])
+              .map((c) => c['courtID'] as String))
+          .toSet();
 
-      final availableCourts = allCourts.where((court) {
-        return !bookedCourts.any((booking) {
-          return booking['courtID'] == court.courtID &&
-              booking['isOverlap'] == true;
-        });
-      }).toList();
-
-      _cachedAvailableCourts = availableCourts;
-      return _cachedAvailableCourts;
+      return allCourts
+          .where((court) => !bookedCourtIDs.contains(court.courtID))
+          .toList();
     } catch (e) {
       print('Error fetching available courts: $e');
       return [];
     }
   }
 
+  Future<bool> isCourtAvailable(String facilityID, String courtID) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('facility')
+        .doc(facilityID)
+        .collection('court')
+        .doc(courtID)
+        .get();
+
+    return snapshot.data()?['availability'] ?? true;
+  }
+
+  // Add/remove selected courts
   void addCourtToSelection(Court court) {
     if (!selectedCourts.contains(court)) {
       selectedCourts.add(court);
-      print("Court added to selection: ${court.courtName}");
-      print(
-          "Currently selected courts: ${selectedCourts.map((c) => c.courtName).join(', ')}");
+      print("Court added: ${court.courtName}");
       notifyListeners();
     }
   }
 
   void removeCourtFromSelection(Court court) {
-    if (selectedCourts.contains(court)) {
-      selectedCourts.remove(court);
-      print("Court removed from selection: ${court.courtName}");
-      print(
-          "Currently selected courts: ${selectedCourts.map((c) => c.courtName).join(', ')}");
+    if (selectedCourts.remove(court)) {
+      print("Court removed: ${court.courtName}");
       notifyListeners();
     }
   }
 
-  // Fetch the rates from the Fee subcollection for the selected facility
+  /// Fetch rates for selected facility
   Future<void> _fetchFacilityRates(String facilityId) async {
     try {
       final feeSnapshot = await FirebaseFirestore.instance
@@ -150,43 +138,41 @@ class BookingController with ChangeNotifier {
           .get();
 
       if (feeSnapshot.docs.isEmpty) {
-        print('No fee data found for this facility.');
+        print('No fee data found.');
         return;
       }
 
-      final ratesData = feeSnapshot.docs.first.data(); // Assuming one document
+      final data = feeSnapshot.docs.first.data();
+
       rates = {
-        'weekdayRateBefore6':
-            ratesData['weekdayRateBefore6']?.toDouble() ?? 0.0,
-        'weekdayRateAfter6': ratesData['weekdayRateAfter6']?.toDouble() ?? 0.0,
-        'weekendRateBefore6':
-            ratesData['weekendRateBefore6']?.toDouble() ?? 0.0,
-        'weekendRateAfter6': ratesData['weekendRateAfter6']?.toDouble() ?? 0.0,
+        'weekdayRateBefore6': (data['weekdayRateBefore6'] ?? 0.0).toDouble(),
+        'weekdayRateAfter6': (data['weekdayRateAfter6'] ?? 0.0).toDouble(),
+        'weekendRateBefore6': (data['weekendRateBefore6'] ?? 0.0).toDouble(),
+        'weekendRateAfter6': (data['weekendRateAfter6'] ?? 0.0).toDouble(),
       };
 
-      print(
-          'Fetched rates: $rates'); // Log the rates to check if they are correct
-      notifyListeners(); // Notify listeners to update UI
+      print('Rates updated: $rates');
+      notifyListeners();
     } catch (e) {
-      print('Error fetching facility rates: $e');
+      print('Error fetching rates: $e');
     }
   }
 
   void setSelectedDate(DateTime date) {
     selectedDate = date;
-    print("Selected Date set in Controller: $selectedDate");
+    print("Selected date: $selectedDate");
     notifyListeners();
   }
 
   void setStartTime(DateTime time) {
     startTime = time;
-    print("Selected Start Time set in Controller: $startTime");
+    print("Start time: $startTime");
     notifyListeners();
   }
 
   void setDuration(int hours) {
     duration = hours;
-    print("Selected Duration set in Controller: $duration hours");
+    print("Duration: $duration hour(s)");
     notifyListeners();
   }
 }

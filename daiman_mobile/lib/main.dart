@@ -28,7 +28,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Ensure Firebase is initialized
   Stripe.publishableKey =
-      'pk_test_51QXxohJMi70xUkuHjcec8DFEuYOLYPVY2DEX2PMZTfIvvon1FybbHJontUwhpVLkMl3PNkNfD5hLVD3eebxv7xKg00lLibZj4m'; 
+      'pk_test_51QXxohJMi70xUkuHjcec8DFEuYOLYPVY2DEX2PMZTfIvvon1FybbHJontUwhpVLkMl3PNkNfD5hLVD3eebxv7xKg00lLibZj4m';
   await Stripe.instance.applySettings();
   await AuthController().checkUserStatus();
   runApp(
@@ -129,11 +129,26 @@ class MyApp extends StatelessWidget {
           return const BookingHistoryPage(); // Forgot password page
         });
       case "/live":
-        return MaterialPageRoute(builder: (BuildContext context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>;
-          return LiveAvailabilityPage(facilityId: args['facilityId']);
-        });
+        final args = settings.arguments as Map<String, dynamic>?;
+
+        print("Received args in /live route: $args");
+
+        if (args == null ||
+            !args.containsKey('facilityID') ||
+            !args.containsKey('date')) {
+          return MaterialPageRoute(
+            builder: (context) => const Scaffold(
+              body: Center(child: Text("Invalid navigation parameters.")),
+            ),
+          );
+        }
+
+        return MaterialPageRoute(
+          builder: (context) => LiveAvailabilityPage(
+            facilityID: args['facilityID'],
+            date: args['date'],
+          ),
+        );
       case "/court":
         return MaterialPageRoute(builder: (BuildContext context) {
           final args = ModalRoute.of(context)!.settings.arguments
