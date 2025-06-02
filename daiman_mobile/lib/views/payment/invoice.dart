@@ -1,7 +1,9 @@
+import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class InvoicePage extends StatefulWidget {
   final String bookingID;
@@ -204,6 +206,10 @@ class _InvoicePageState extends State<InvoicePage> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
+                    final bookingController =
+                        Provider.of<BookingController>(context, listen: false);
+                    bookingController.clearSelection();
+
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

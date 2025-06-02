@@ -190,4 +190,14 @@ class BookingController with ChangeNotifier {
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
+
+  void clearSelection() {
+    selectedCourts.clear();
+    selectedFacility = null;
+    selectedDate = null;
+    startTime = null;
+    duration = 1;
+    rates.clear();
+    notifyListeners();
+  }
 }

@@ -197,6 +197,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 onPressed: _selectedMethod == null ? null : _handlePayNow,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
                   minimumSize: const Size.fromHeight(50),
                 ),
                 child: const Text("Pay Now"),

@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:daiman_mobile/models/facility.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/views/booking/court_list.dart';
@@ -48,10 +49,6 @@ class _BookingPageState extends State<BookingPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: SectionHeading(
                     title: "Type of Sport",
-                    showActionButton: true,
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/facilitylist');
-                    },
                     headingStyle: 'small',
                   ),
                 ),
@@ -65,9 +62,7 @@ class _BookingPageState extends State<BookingPage> {
                       } else {
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: controller.facilities.length > 3
-                              ? 3
-                              : controller.facilities.length,
+                          itemCount: controller.facilities.length,
                           itemBuilder: (context, index) {
                             final facility = controller.facilities[index];
                             return Padding(
@@ -171,9 +166,16 @@ class _BookingPageState extends State<BookingPage> {
                           onPressed: () {
                             final errorMessage = _validateInputs();
                             if (errorMessage != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(errorMessage)),
-                              );
+                              CustomSnackBar.showFailure(
+                                  context, "Error", errorMessage);
+                              return;
+                            }
+
+                            if (controller.rates.isEmpty ||
+                                controller.rates.values
+                                    .every((rate) => rate == 0.0)) {
+                              CustomSnackBar.showFailure(context, "Unavailable",
+                                  "Selected facility is not available.");
                               return;
                             }
 

@@ -40,6 +40,15 @@ class BookingSummaryPage extends StatelessWidget {
       duration: duration,
     );
 
+    String formatTime12Hour(DateTime time) {
+      int hour = time.hour;
+      final minute = time.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+      hour = hour % 12;
+      if (hour == 0) hour = 12;
+      return '$hour:$minute $period';
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -65,8 +74,7 @@ class BookingSummaryPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
                 "Date: ${selectedDate.toLocal().toIso8601String().split('T')[0]}"),
-            Text(
-                "Time: ${startTime.hour}:${startTime.minute.toString().padLeft(2, '0')}"),
+            Text("Start Time: ${formatTime12Hour(startTime)}"),
             Text("Duration: ${duration} hours"),
             const SizedBox(height: 8),
             const Text(
@@ -89,6 +97,10 @@ class BookingSummaryPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      side: const BorderSide(color: Colors.blueAccent),
+                    ),
                     child: const Text("Cancel"),
                   ),
                 ),
@@ -105,6 +117,7 @@ class BookingSummaryPage extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
                     ),
                     child: const Text("Book Now"),
                   ),
