@@ -14,7 +14,7 @@ class AboutUsPage extends StatelessWidget {
               height: 240,
               width: double.infinity,
               child: Image.asset(
-                'assets/images/img1.jpg',
+                'assets/images/img2.jpg',
                 fit: BoxFit.fill,
               ),
             ),
@@ -23,7 +23,11 @@ class AboutUsPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: SingleChildScrollView(
                   child: Text(
-                    '''Daiman Sports Facility is a premier center offering top-tier sports amenities including badminton courts, swimming pools, and a gymnasium. Whether you're an athlete or a beginner, we provide a clean, safe, and welcoming environment for everyone to train and enjoy their favorite sports. Our mission is to promote active living and community engagement through excellent facilities and customer service.''',
+                    '''Welcome to Daiman Sri Skudai Sports Centre (DSSSC), an extension of the renowned Daiman Johor Jaya Sports Complex. With 18 PU rubber courts and 7 premier Futsal courts, including an international-size FIFA Court, we set the standard for sports excellence.
+
+Catering to global standards, DSSSC is the go-to destination for badminton and Futsal enthusiasts. Our facility, complete with LED lighting, ensures a top-notch experience for both professionals and recreational players.
+
+The highlight is our international FIFA Court, ideal for hosting global competitions. Conveniently located with ample parking and top-quality amenities, Daiman Sri Skudai Sports Centre is the ultimate sports destination in Johor, attracting enthusiasts from everywhere.''',
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
                 ),

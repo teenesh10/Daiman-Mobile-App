@@ -9,7 +9,6 @@ import 'package:daiman_mobile/views/widgets/heading.dart';
 import 'package:daiman_mobile/views/widgets/time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
@@ -104,10 +103,8 @@ class _BookingPageState extends State<BookingPage> {
                     setState(() {
                       selectedDate = date;
                     });
-                    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
                     Provider.of<BookingController>(context, listen: false)
                         .setSelectedDate(date);
-                    print("Selected Date: $formattedDate"); // Debug log
                   },
                 ),
                 const SizedBox(height: 30),
@@ -126,17 +123,22 @@ class _BookingPageState extends State<BookingPage> {
                       setState(() {
                         selectedTime = time;
                       });
-                      final startTime = DateTime(
-                        selectedDate?.year ?? DateTime.now().year,
-                        selectedDate?.month ?? DateTime.now().month,
-                        selectedDate?.day ?? DateTime.now().day,
+
+                      final isLateNightBooking = time.hour < 2;
+                      final adjustedStartDate = isLateNightBooking
+                          ? selectedDate?.add(const Duration(days: 1))
+                          : selectedDate;
+
+                      final selectedDateTime = DateTime(
+                        adjustedStartDate?.year ?? DateTime.now().year,
+                        adjustedStartDate?.month ?? DateTime.now().month,
+                        adjustedStartDate?.day ?? DateTime.now().day,
                         time.hour,
                         time.minute,
                       );
+
                       Provider.of<BookingController>(context, listen: false)
-                          .setStartTime(startTime);
-                      print(
-                          "Selected Time: ${time.format(context)}"); // Debug log
+                          .setStartTime(selectedDateTime);
                     },
                   ),
                 ),
@@ -167,42 +169,43 @@ class _BookingPageState extends State<BookingPage> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            if (controller.selectedFacility != null &&
-                                selectedDate != null &&
-                                selectedTime != null &&
-                                selectedDuration != null) {
-                              final startTime = DateTime(
-                                selectedDate!.year,
-                                selectedDate!.month,
-                                selectedDate!.day,
-                                selectedTime!.hour,
-                                selectedTime!.minute,
-                              );
-
-                              // Set values in the BookingController
-                              controller.setSelectedDate(selectedDate!);
-                              controller.setStartTime(startTime);
-                              controller.setDuration(selectedDuration!);
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CourtListPage(
-                                    facilityID:
-                                        controller.selectedFacility!.facilityID,
-                                    date: selectedDate!,
-                                    startTime: startTime,
-                                    duration: selectedDuration!,
-                                  ),
-                                ),
-                              );
-                            } else {
+                            final errorMessage = _validateInputs();
+                            if (errorMessage != null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(_getValidationMessage()),
-                                ),
+                                SnackBar(content: Text(errorMessage)),
                               );
+                              return;
                             }
+
+                            final isLateNightBooking = selectedTime!.hour < 2;
+                            final adjustedStartDate = isLateNightBooking
+                                ? selectedDate!.add(const Duration(days: 1))
+                                : selectedDate!;
+
+                            final startTime = DateTime(
+                              adjustedStartDate.year,
+                              adjustedStartDate.month,
+                              adjustedStartDate.day,
+                              selectedTime!.hour,
+                              selectedTime!.minute,
+                            );
+
+                            controller.setSelectedDate(selectedDate!);
+                            controller.setStartTime(startTime);
+                            controller.setDuration(selectedDuration!);
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CourtListPage(
+                                  facilityID:
+                                      controller.selectedFacility!.facilityID,
+                                  date: selectedDate!,
+                                  startTime: startTime,
+                                  duration: selectedDuration!,
+                                ),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
@@ -228,14 +231,65 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  String _getValidationMessage() {
+  String? _validateInputs() {
+    final now = DateTime.now();
+    final facilityOpenHour = 8; // 8:00 AM
+    final facilityCloseHour = 2; // 2:00 AM (next day)
+
     if (selectedDate == null) return "Please select a date.";
     if (Provider.of<BookingController>(context, listen: false)
             .selectedFacility ==
         null) {
       return "Please select a facility.";
     }
-    return "Validation passed.";
+    if (selectedTime == null) return "Please select a start time.";
+    if (selectedDuration == null) return "Please select a duration.";
+
+    final isLateNightBooking = selectedTime!.hour < facilityCloseHour;
+    final adjustedStartDate = isLateNightBooking
+        ? selectedDate!.add(const Duration(days: 1))
+        : selectedDate!;
+
+    final selectedDateTime = DateTime(
+      adjustedStartDate.year,
+      adjustedStartDate.month,
+      adjustedStartDate.day,
+      selectedTime!.hour,
+      selectedTime!.minute,
+    );
+
+    final endDateTime =
+        selectedDateTime.add(Duration(hours: selectedDuration!));
+
+    final openTime = DateTime(
+      selectedDate!.year,
+      selectedDate!.month,
+      selectedDate!.day,
+      facilityOpenHour,
+      0,
+    );
+
+    final closeTime = DateTime(
+      selectedDate!.add(const Duration(days: 1)).year,
+      selectedDate!.add(const Duration(days: 1)).month,
+      selectedDate!.add(const Duration(days: 1)).day,
+      facilityCloseHour,
+      0,
+    );
+
+    if (selectedDateTime.isBefore(now)) {
+      return "Start time cannot be in the past.";
+    }
+
+    if (selectedDateTime.isBefore(openTime)) {
+      return "Facility opens at 8:00 AM.";
+    }
+
+    if (endDateTime.isAfter(closeTime)) {
+      return "Booking exceeds facility's closing time at 2:00 AM.";
+    }
+
+    return null;
   }
 
   Widget _buildFacilityButton({

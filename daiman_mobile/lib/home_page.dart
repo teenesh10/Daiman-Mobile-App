@@ -4,7 +4,6 @@ import 'package:daiman_mobile/views/widgets/curved_shape.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
 import 'package:daiman_mobile/views/widgets/heading.dart';
 import 'package:daiman_mobile/views/widgets/home_appbar.dart';
-import 'package:daiman_mobile/views/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -18,9 +17,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   final List<String> _images = [
-    'assets/images/img1.jpg',
-    'assets/images/img2.jpg',
-    'assets/images/img3.jpg',
+    'assets/images/img6.JPG',
+    'assets/images/img4.JPG',
+    'assets/images/img5.JPG',
   ];
   int _currentPage = 0;
   Timer? _timer;
@@ -69,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         return Image.asset(
                           _images[index],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         );
                       },
                     ),
@@ -83,23 +82,21 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HomeAppBar(),
-                    const SizedBox(height: 25.0),
+                    const SizedBox(height: 15.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SearchContainer(),
-                          const SizedBox(height: 32.0),
                           const SectionHeading(
                             title: "About Us",
                             headingStyle: 'medium',
                           ),
                           const SizedBox(height: 10),
                           CustomCard(
-                            imageUrl: 'assets/images/img1.jpg',
+                            imageUrl: 'assets/images/img2.jpg',
                             title:
-                                'Daiman Sports Facility offers high-quality courts and services for all sport lovers. Enjoy top-tier amenities and friendly support to elevate your game.',
+                                'Welcome to Daiman Sri Skudai Sports Centre (DSSSC), an extension of the renowned Daiman Johor Jaya Sports Complex. With 18 PU rubber courts and 7 premier Futsal courts,',
                             onReadMore: () {
                               Navigator.push(
                                 context,

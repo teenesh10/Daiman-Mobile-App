@@ -3,69 +3,64 @@ import 'package:flutter/material.dart';
 class CustomCard extends StatelessWidget {
   final String imageUrl;
   final String title;
-  final VoidCallback? onReadMore;
+  final VoidCallback onReadMore;
 
   const CustomCard({
-    super.key,
     required this.imageUrl,
     required this.title,
-    this.onReadMore,
+    required this.onReadMore,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return Card(
+      elevation: 4,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image section
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: Image.asset(
               imageUrl,
+              fit: BoxFit.cover,
               width: double.infinity,
-              height: 160,
-              fit: BoxFit.fill,
             ),
           ),
-          // Title and Read More
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // ✅ Truncate long text with ellipsis
                 Text(
-                  title.length > 100 ? '${title.substring(0, 100)}...' : title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
+                  title,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.black,
+                      ),
+                  maxLines: 3, // you can change to 2 or 1 if needed
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                GestureDetector(
-                  onTap: onReadMore,
-                  child: const Text(
-                    'Read More',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 16,
-                      decoration: TextDecoration.none,
+                const SizedBox(height: 8),
+                // ✅ Align the Read More button to the left
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: onReadMore,
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.blueAccent,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        decoration: TextDecoration.none,
+                      ),
+                      padding:
+                          EdgeInsets.zero, // removes default button padding
+                      minimumSize: const Size(0, 0), // removes default min size
+                      tapTargetSize:
+                          MaterialTapTargetSize.shrinkWrap, // tighter hit area
                     ),
+                    child: const Text("Read More"),
                   ),
                 ),
               ],
