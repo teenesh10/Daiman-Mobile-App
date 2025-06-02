@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
+import 'package:daiman_mobile/views/payment/invoice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:daiman_mobile/models/court.dart';
@@ -15,14 +16,11 @@ class PaymentController with ChangeNotifier {
     required DateTime startTime,
     required int duration,
   }) {
-    // Determine if it's a weekday or weekend
     final isWeekend =
         date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
 
-    // Determine if the time is before or after 6 PM
     final isAfter6PM = startTime.hour >= 18;
 
-    // Determine the rate type
     late double rate;
     if (isWeekend) {
       rate = isAfter6PM
@@ -34,7 +32,6 @@ class PaymentController with ChangeNotifier {
           : facilityRates['weekdayRateBefore6'] ?? 0.0;
     }
 
-    // Calculate total cost
     final total = selectedCourts.length * rate * duration;
     return total;
   }
@@ -49,7 +46,6 @@ class PaymentController with ChangeNotifier {
     BuildContext context,
   ) async {
     try {
-      // 1. Calculate total amount in sen (RM x 100)
       final totalAmountRM = calculateTotalAmount(
         selectedCourts: selectedCourts,
         facilityRates: facilityRates,
@@ -59,13 +55,11 @@ class PaymentController with ChangeNotifier {
       );
       final totalAmountSen = (totalAmountRM * 100).round();
 
-      // 2. Create payment intent
       final paymentIntentData = await createPaymentIntent(
         totalAmountSen.toString(),
         'MYR',
       );
 
-      // 3. Initialize payment sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentData['clientSecret'],
@@ -74,12 +68,10 @@ class PaymentController with ChangeNotifier {
         ),
       );
 
-      // 4. Present payment sheet
       try {
         await Stripe.instance.presentPaymentSheet();
 
-        // 5. Store bookings in Firestore after success
-        await storeBookingToFirestore(
+        final bookingID = await storeBookingToFirestore(
           selectedCourts: selectedCourts,
           date: date,
           startTime: startTime,
@@ -89,15 +81,18 @@ class PaymentController with ChangeNotifier {
           amountPaid: totalAmountRM,
         );
 
-        // 6. Show success snackbar
         CustomSnackBar.showSuccess(
           context,
           'Payment Successful!',
           'Your booking has been confirmed.',
         );
 
-        // 7. Redirect to booking history page
-        Navigator.pushReplacementNamed(context, '/history');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => InvoicePage(bookingID: bookingID),
+          ),
+        );
       } on StripeException catch (e) {
         if (e.error.code == FailureCode.Canceled) {
           CustomSnackBar.showFailure(
@@ -136,8 +131,7 @@ class PaymentController with ChangeNotifier {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        // <-- dynamic instead of String
-        'amount': int.parse(amount), // Convert amount string to integer
+        'amount': int.parse(amount),
         'currency': currency,
         'email': FirebaseAuth.instance.currentUser?.email,
       }),
@@ -190,11 +184,9 @@ class PaymentController with ChangeNotifier {
     final bookingCollection = FirebaseFirestore.instance.collection('booking');
     final batch = FirebaseFirestore.instance.batch();
 
-    // 1. Generate booking ID
     final bookingID = bookingCollection.doc().id;
     final bookingRef = bookingCollection.doc(bookingID);
 
-    // 2. Prepare booking data
     final booking = {
       'bookingID': bookingID,
       'userID': user!.uid,
@@ -213,10 +205,8 @@ class PaymentController with ChangeNotifier {
       'amountPaid': amountPaid,
     };
 
-    // 3. Add booking to Firestore
     batch.set(bookingRef, booking);
 
-    // 4. Update court availability status
     for (final court in selectedCourts) {
       final courtRef = FirebaseFirestore.instance
           .collection('facility')
@@ -225,11 +215,10 @@ class PaymentController with ChangeNotifier {
           .doc(court.courtID);
 
       batch.update(courtRef, {
-        'availability': false, // Mark court as unavailable
+        'availability': false,
       });
     }
 
-    // 5. Commit all changes as a batch
     await batch.commit();
 
     return bookingID;

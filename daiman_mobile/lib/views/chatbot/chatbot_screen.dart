@@ -8,6 +8,8 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
+enum ChatCategory { general, report }
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
@@ -22,6 +24,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final _bot = const types.User(id: "bot");
   final _uuid = const Uuid();
   bool _showCategories = true;
+
+  ChatCategory? _selectedCategory;
 
   void _addMessage(types.Message message) {
     setState(() {
@@ -41,7 +45,6 @@ class _ChatScreenState extends State<ChatScreen> {
     String? response = _getKeywordResponse(text);
 
     if (response == null) {
-      // If no predefined response, use OpenAI API
       try {
         response = await _openAIService.sendMessage(text);
       } catch (e) {
@@ -68,8 +71,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return null;
   }
 
-  void _handleCategorySelection(String category) {
-    if (category == "General Inquiry") {
+  void _handleCategorySelection(ChatCategory category) {
+    setState(() {
+      _selectedCategory = category;
+    });
+
+    if (category == ChatCategory.general) {
       setState(() {
         _showCategories = false;
         _addMessage(
@@ -80,12 +87,53 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         );
       });
-    } else if (category == "Report an Issue") {
+    } else if (category == ChatCategory.report) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ReportIssueScreen()),
       );
     }
+  }
+
+  Widget _buildCategoryOption(
+      ChatCategory category, IconData icon, String label) {
+    final isSelected = _selectedCategory == category;
+
+    return GestureDetector(
+      onTap: () => _handleCategorySelection(category),
+      child: Container(
+        width: 180,
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.white,
+          border: Border.all(
+            color: isSelected ? Colors.blueAccent : Colors.grey.shade300,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+              color: Colors.blueAccent, // Always blue
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: isSelected ? Colors.blueAccent : Colors.black87,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -125,17 +173,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ElevatedButton(
-                      onPressed: () =>
-                          _handleCategorySelection("General Inquiry"),
-                      child: const Text("General Inquiry"),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () =>
-                          _handleCategorySelection("Report an Issue"),
-                      child: const Text("Report an Issue"),
-                    ),
+                    _buildCategoryOption(ChatCategory.general,
+                        Icons.question_answer, "General Inquiry"),
+                    const SizedBox(height: 20),
+                    _buildCategoryOption(ChatCategory.report,
+                        Icons.report_problem, "Report an Issue"),
                   ],
                 ),
               ),
@@ -148,6 +190,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   _sendMessage(message.text);
                 },
                 user: _user,
+                theme: const DefaultChatTheme(
+                  inputBackgroundColor: Colors.blueAccent,
+                  inputTextColor: Colors.white,
+                  inputTextCursorColor: Colors.white,
+                  sendButtonIcon: Icon(Icons.send, color: Colors.white),
+                ),
               ),
             ),
         ],

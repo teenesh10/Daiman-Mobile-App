@@ -106,6 +106,7 @@ class _InvoicePageState extends State<InvoicePage> {
           ),
           centerTitle: true,
           automaticallyImplyLeading: false, // no back button
+          backgroundColor: Colors.blueAccent,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
