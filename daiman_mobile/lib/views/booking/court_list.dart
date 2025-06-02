@@ -23,8 +23,6 @@ class CourtListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<BookingController>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Select Courts"),
@@ -33,7 +31,7 @@ class CourtListPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Price Information
+          // Price Information and Live Availability Link
           Stack(
             children: [
               Padding(
@@ -63,8 +61,6 @@ class CourtListPage extends StatelessWidget {
                 right: 25,
                 child: InkWell(
                   onTap: () {
-                    print(
-                        "Navigating to /live with facilityID: $facilityID and date: $date");
                     Navigator.pushNamed(
                       context,
                       '/live',
@@ -90,77 +86,80 @@ class CourtListPage extends StatelessWidget {
 
           // Court Selection List
           Expanded(
-            child: FutureBuilder<List<Court>>(
-              future: controller.fetchAvailableCourts(
-                facilityID,
-                date,
-                startTime,
-                duration,
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            child: Consumer<BookingController>(
+              builder: (context, controller, child) {
+                return FutureBuilder<List<Court>>(
+                  future: controller.fetchAvailableCourts(
+                    facilityID,
+                    date,
+                    startTime,
+                    duration,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Error: ${snapshot.error}',
-                          style: const TextStyle(color: Colors.red),
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Error: ${snapshot.error}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                controller.fetchAvailableCourts(
+                                  facilityID,
+                                  date,
+                                  startTime,
+                                  duration,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                              ),
+                              child: const Text("Retry"),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Retry logic
-                            controller.fetchAvailableCourts(
-                              facilityID,
-                              date,
-                              startTime,
-                              duration,
-                            );
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          "No courts available for the selected time. Please try a different time or date.",
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
+
+                    final courts = snapshot.data!;
+                    courts.sort((a, b) => a.courtName.compareTo(b.courtName));
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: courts.length,
+                      itemBuilder: (context, index) {
+                        final court = courts[index];
+                        final isSelected =
+                            controller.selectedCourts.contains(court);
+
+                        return CourtTile(
+                          courtName: court.courtName,
+                          isSelected: isSelected,
+                          onChanged: (isSelected) {
+                            if (isSelected) {
+                              controller.addCourtToSelection(court);
+                            } else {
+                              controller.removeCourtFromSelection(court);
+                            }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                          ),
-                          child: const Text("Retry"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "No courts available for the selected time. Please try a different time or date.",
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
-
-                final courts = snapshot.data!;
-                courts.sort((a, b) => a.courtName.compareTo(b.courtName));
-
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: courts.length,
-                  itemBuilder: (context, index) {
-                    final court = courts[index];
-                    final isSelected =
-                        controller.selectedCourts.contains(court);
-
-                    return CourtTile(
-                      courtName: court.courtName,
-                      isSelected: isSelected,
-                      onChanged: (isSelected) {
-                        if (isSelected) {
-                          controller.addCourtToSelection(court);
-                        } else {
-                          controller.removeCourtFromSelection(court);
-                        }
+                        );
                       },
                     );
                   },
@@ -169,39 +168,43 @@ class CourtListPage extends StatelessWidget {
             ),
           ),
 
-          // Confirm Selection Button
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-            child: ElevatedButton(
-              onPressed: controller.selectedCourts.isEmpty
-                  ? null
-                  : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChangeNotifierProvider(
-                            create: (_) => PaymentController(),
-                            child: const BookingSummaryPage(),
-                          ),
-                        ),
-                      );
-                    },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                backgroundColor: controller.selectedCourts.isEmpty
-                    ? Colors.grey
-                    : Colors.blueAccent,
-              ),
-              child: Center(
-                child: Text(
-                  controller.selectedCourts.isEmpty
-                      ? "Select Courts to Continue"
-                      : "Confirm Selection (${controller.selectedCourts.length})",
-                  style: const TextStyle(color: Colors.white),
+          // Confirm Button
+          Consumer<BookingController>(
+            builder: (context, controller, _) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 16.0),
+                child: ElevatedButton(
+                  onPressed: controller.selectedCourts.isEmpty
+                      ? null
+                      : () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                create: (_) => PaymentController(),
+                                child: const BookingSummaryPage(),
+                              ),
+                            ),
+                          );
+                        },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: controller.selectedCourts.isEmpty
+                        ? Colors.grey
+                        : Colors.blueAccent,
+                  ),
+                  child: Center(
+                    child: Text(
+                      controller.selectedCourts.isEmpty
+                          ? "Select Courts to Continue"
+                          : "Confirm Selection (${controller.selectedCourts.length})",
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),

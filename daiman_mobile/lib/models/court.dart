@@ -35,4 +35,14 @@ class Court {
       'availability': availability,
     };
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Court &&
+          runtimeType == other.runtimeType &&
+          courtID == other.courtID;
+
+  @override
+  int get hashCode => courtID.hashCode;
 }

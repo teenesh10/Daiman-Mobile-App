@@ -1,5 +1,6 @@
 import 'package:daiman_mobile/models/court.dart';
 import 'package:daiman_mobile/models/facility.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -174,5 +175,20 @@ class BookingController with ChangeNotifier {
     duration = hours;
     print("Duration: $duration hour(s)");
     notifyListeners();
+  }
+
+  Future<int> getUpcomingBookingCount() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return 0;
+
+    final now = DateTime.now();
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('booking')
+        .where('userID', isEqualTo: user.uid)
+        .where('startTime', isGreaterThan: Timestamp.fromDate(now))
+        .get();
+
+    return snapshot.docs.length;
   }
 }

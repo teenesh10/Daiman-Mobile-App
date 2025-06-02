@@ -59,27 +59,26 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
     final List<TimeOfDay> slots = [];
 
     TimeOfDay current = const TimeOfDay(hour: 8, minute: 0);
-    const endHour = 2;
-    final int interval = timeslotIntervalMinutes;
+    const int interval = timeslotIntervalMinutes;
 
+    // Set starting time to next available 30-min slot if today
     if (isToday) {
       final nextSlot = _getNextHalfHourSlot(now);
       current = TimeOfDay(hour: nextSlot.hour, minute: nextSlot.minute);
     }
 
+    // Keep generating slots until we pass 2:00 AM
     while (true) {
-      print('Adding slot: ${_formatTimeOfDay(current)}');
       slots.add(current);
 
-      // Get next slot
-      final next = _addMinutesToTimeOfDay(current, interval);
-
-      if (next.hour == endHour && next.minute == 0) {
-        slots.add(next);
-        break;
+      if (current.hour == 2 && current.minute == 0) {
+        break; // Stop once we’ve added 2:00 AM
       }
 
-      current = next;
+      current = _addMinutesToTimeOfDay(current, interval);
+
+      // Safety break if somehow stuck in loop
+      if (slots.length > 100) break;
     }
 
     print('Final slots count: ${slots.length}');
@@ -135,7 +134,7 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredTimeslots = timeslots.sublist(0, timeslots.length - 1);
+    final filteredTimeslots = timeslots;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Live Availability")),
