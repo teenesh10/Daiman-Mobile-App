@@ -11,7 +11,6 @@ class UserModel {
     required this.username,
   });
 
-  // Convert Firestore document to UserModel
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;
     return UserModel(
@@ -21,7 +20,6 @@ class UserModel {
     );
   }
 
-  // Convert UserModel to Firestore format
   Map<String, dynamic> toFirestore() {
     return {
       'email': email,

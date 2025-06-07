@@ -14,7 +14,7 @@ class PrivacyPolicyPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).primaryColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),

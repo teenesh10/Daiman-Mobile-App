@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:daiman_mobile/views/payment/checkout_page.dart';
 import 'package:daiman_mobile/views/payment/invoice.dart';
@@ -124,9 +125,13 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       onTap: () => _selectMethod(method),
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.white,
+          color: isSelected
+              ? Theme.of(context).primaryColor.withOpacity(0.1)
+              : Colors.white,
           border: Border.all(
-            color: isSelected ? Colors.blueAccent : Colors.grey.shade300,
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.grey.shade300,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -145,7 +150,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.blueAccent : Colors.black87,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.black87,
               ),
             ),
           ],
@@ -165,7 +172,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: primaryColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -196,7 +203,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               child: ElevatedButton(
                 onPressed: _selectedMethod == null ? null : _handlePayNow,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
+                  backgroundColor: primaryColor,
                   foregroundColor: Colors.white,
                   minimumSize: const Size.fromHeight(50),
                 ),

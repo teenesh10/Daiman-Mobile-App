@@ -25,9 +25,7 @@ class BookingController with ChangeNotifier {
           await FirebaseFirestore.instance.collection('facility').get();
       facilities = snapshot.docs.map(Facility.fromFirestore).toList();
       notifyListeners();
-    } catch (e) {
-      print('Error fetching facilities: $e');
-    }
+    } catch (e) {}
   }
 
   /// Handle facility selection and initialize rates
@@ -97,7 +95,6 @@ class BookingController with ChangeNotifier {
           .where((court) => !bookedCourtIDs.contains(court.courtID))
           .toList();
     } catch (e) {
-      print('Error fetching available courts: $e');
       return [];
     }
   }
@@ -117,14 +114,12 @@ class BookingController with ChangeNotifier {
   void addCourtToSelection(Court court) {
     if (!selectedCourts.contains(court)) {
       selectedCourts.add(court);
-      print("Court added: ${court.courtName}");
       notifyListeners();
     }
   }
 
   void removeCourtFromSelection(Court court) {
     if (selectedCourts.remove(court)) {
-      print("Court removed: ${court.courtName}");
       notifyListeners();
     }
   }
@@ -139,7 +134,6 @@ class BookingController with ChangeNotifier {
           .get();
 
       if (feeSnapshot.docs.isEmpty) {
-        print('No fee data found.');
         return;
       }
 
@@ -152,28 +146,22 @@ class BookingController with ChangeNotifier {
         'weekendRateAfter6': (data['weekendRateAfter6'] ?? 0.0).toDouble(),
       };
 
-      print('Rates updated: $rates');
       notifyListeners();
-    } catch (e) {
-      print('Error fetching rates: $e');
-    }
+    } catch (e) {}
   }
 
   void setSelectedDate(DateTime date) {
     selectedDate = date;
-    print("Selected date: $selectedDate");
     notifyListeners();
   }
 
   void setStartTime(DateTime time) {
     startTime = time;
-    print("Start time: $startTime");
     notifyListeners();
   }
 
   void setDuration(int hours) {
     duration = hours;
-    print("Duration: $duration hour(s)");
     notifyListeners();
   }
 

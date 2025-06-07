@@ -8,8 +8,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.leadingOnPressed,
     this.showBackArrows = false,
-    this.titleColor = Colors.black, // Default to black
-    this.leadingIconColor = Colors.black, // Default to black
+    this.titleColor = Colors.black, 
+    this.leadingIconColor = Colors.black, 
   });
 
   final Widget? title;
@@ -32,18 +32,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back,
-                    color: leadingIconColor), // Use dynamic color
+                    color: leadingIconColor),
               )
             : leadingIcon != null
                 ? IconButton(
                     onPressed: leadingOnPressed,
                     icon: Icon(leadingIcon,
-                        color: leadingIconColor), // Use dynamic color
+                        color: leadingIconColor), 
                   )
                 : null,
         title: title != null
             ? DefaultTextStyle(
-                style: TextStyle(color: titleColor), // Use dynamic color
+                style: TextStyle(color: titleColor),
                 child: title!,
               )
             : null,

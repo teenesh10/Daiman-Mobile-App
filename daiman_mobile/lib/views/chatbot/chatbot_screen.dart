@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/services/chatbot.dart';
 import 'package:daiman_mobile/services/chatbot_response.dart';
 import 'package:daiman_mobile/views/chatbot/report_screen.dart';
@@ -104,9 +105,13 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Container(
         width: 180,
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.white,
+          color: isSelected
+              ? Theme.of(context).primaryColor.withOpacity(0.1)
+              : Colors.white,
           border: Border.all(
-            color: isSelected ? Colors.blueAccent : Colors.grey.shade300,
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.grey.shade300,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -118,7 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Icon(
               icon,
               size: 40,
-              color: Colors.blueAccent, // Always blue
+              color: Theme.of(context).primaryColor,
             ),
             const SizedBox(height: 8),
             Text(
@@ -126,7 +131,9 @@ class _ChatScreenState extends State<ChatScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
-                color: isSelected ? Colors.blueAccent : Colors.black87,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
@@ -160,7 +167,7 @@ class _ChatScreenState extends State<ChatScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).primaryColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -191,7 +198,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
                 user: _user,
                 theme: const DefaultChatTheme(
-                  inputBackgroundColor: Colors.blueAccent,
+                  inputBackgroundColor: primaryColor,
                   inputTextColor: Colors.white,
                   inputTextCursorColor: Colors.white,
                   sendButtonIcon: Icon(Icons.send, color: Colors.white),

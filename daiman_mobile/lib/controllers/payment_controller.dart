@@ -140,7 +140,6 @@ class PaymentController with ChangeNotifier {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      print('Failed to create payment intent: ${response.body}');
       throw Exception('Failed to create payment intent');
     }
   }

@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmationPopup extends StatelessWidget {
@@ -21,16 +22,16 @@ class ConfirmationPopup extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pop();
           },
           child: Text(cancelText, style: const TextStyle(color: Colors.grey)),
         ),
         TextButton(
           onPressed: () {
-            onConfirm(); // Execute confirm action
-            Navigator.of(context).pop(); // Close the dialog
+            onConfirm(); 
+            Navigator.of(context).pop();
           },
-          child: Text(confirmText, style: const TextStyle(color: Colors.blue)),
+          child: Text(confirmText, style: const TextStyle(color: primaryColor)),
         ),
       ],
     );

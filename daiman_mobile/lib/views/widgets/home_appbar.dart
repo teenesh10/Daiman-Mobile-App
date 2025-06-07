@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/navbar.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +22,13 @@ class HomeAppBar extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.black,
+                color: primaryColor,
                 width: 1,
               ),
             ),
             child: const Icon(
               Icons.person_outline,
-              color: Colors.black,
+              color: primaryColor,
               size: 20,
             ),
           ),
@@ -50,7 +51,7 @@ class HomeAppBar extends StatelessWidget {
                 return const Text(
                   'User',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: primaryColor,
                     fontSize: 16,
                   ),
                 );
@@ -68,7 +69,7 @@ class HomeAppBar extends StatelessWidget {
                     Text(
                       snapshot.data!['username'] ?? 'User',
                       style: const TextStyle(
-                        color: Colors.black,
+                        color: primaryColor,
                         fontSize: 16,
                       ),
                     ),
@@ -100,7 +101,7 @@ class HomeAppBar extends StatelessWidget {
                   },
                   icon: const Icon(
                     Icons.shopping_cart,
-                    color: Colors.black,
+                    color: primaryColor,
                   ),
                 ),
                 if (count > 0)

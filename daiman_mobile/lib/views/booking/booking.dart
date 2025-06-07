@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
 import 'package:daiman_mobile/models/facility.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
@@ -28,7 +29,7 @@ class _BookingPageState extends State<BookingPage> {
     final controller = Provider.of<BookingController>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -210,14 +211,14 @@ class _BookingPageState extends State<BookingPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             textStyle: const TextStyle(fontSize: 16),
                           ),
                           child: const Text(
                             "Check Availability",
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

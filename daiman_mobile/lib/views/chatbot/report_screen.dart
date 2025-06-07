@@ -19,7 +19,7 @@ class ReportIssueScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).primaryColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -64,6 +64,10 @@ class ReportIssueScreen extends StatelessWidget {
                   );
                 }
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+              ),
               child: const Text("Submit"),
             ),
           ],

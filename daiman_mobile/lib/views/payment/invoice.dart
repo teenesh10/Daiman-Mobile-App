@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/navbar.dart';
 import 'package:flutter/material.dart';
@@ -107,8 +108,8 @@ class _InvoicePageState extends State<InvoicePage> {
             ),
           ),
           centerTitle: true,
-          automaticallyImplyLeading: false, // no back button
-          backgroundColor: Colors.blueAccent,
+          automaticallyImplyLeading: false,
+          backgroundColor: primaryColor,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -220,6 +221,8 @@ class _InvoicePageState extends State<InvoicePage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),

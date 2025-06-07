@@ -10,7 +10,6 @@ import 'package:daiman_mobile/views/auth/register.dart';
 import 'package:daiman_mobile/views/booking/booking.dart';
 import 'package:daiman_mobile/views/booking/booking_history.dart';
 import 'package:daiman_mobile/views/booking/court_list.dart';
-import 'package:daiman_mobile/views/booking/facility_list.dart';
 import 'package:daiman_mobile/views/booking/live_availability.dart';
 import 'package:daiman_mobile/views/chatbot/chatbot_screen.dart';
 import 'package:daiman_mobile/views/chatbot/report_screen.dart';
@@ -53,8 +52,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Daiman Sports',
         theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          primaryColor: Constants.primaryColor,
+          primaryColor: primaryColor,
+          scaffoldBackgroundColor: bgColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: const TextTheme(
             displayLarge: TextStyle(
@@ -83,55 +82,48 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.bold),
           ),
         ),
-        initialRoute: "/loading", // Default route when app starts
-        onGenerateRoute: _onGenerateRoute, // Dynamic route generation
+        initialRoute: "/loading",
+        onGenerateRoute: _onGenerateRoute,
       ),
     );
   }
 
-  // Define your routes here
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/loading":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const LoadingScreen(); // Show loading screen first
+          return const LoadingScreen();
         });
       case "/home":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const NavBar(); // Home screen
+          return const NavBar();
         });
       case "/login":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const LoginPage(); // Login page
+          return const LoginPage();
         });
       case "/register":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const RegisterPage(); // Register page
+          return const RegisterPage();
         });
       case "/forgot_password":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const ForgotPasswordPage(); // Forgot password page
+          return const ForgotPasswordPage();
         });
       case "/profile":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return ProfilePage(); // Forgot password page
+          return ProfilePage();
         });
       case "/booking":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const BookingPage(); // Forgot password page
-        });
-      case "/facilitylist":
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return const FacilityListPage(); // Forgot password page
+          return const BookingPage();
         });
       case "/history":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const BookingHistoryPage(); // Forgot password page
+          return const BookingHistoryPage();
         });
       case "/live":
         final args = settings.arguments as Map<String, dynamic>?;
-
-        print("Received args in /live route: $args");
 
         if (args == null ||
             !args.containsKey('facilityID') ||

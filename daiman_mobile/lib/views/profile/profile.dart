@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/views/profile/privacy.dart';
 import 'package:daiman_mobile/views/profile/settings.dart';
@@ -49,11 +50,12 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(height: 40),
                       CircleAvatar(
                         radius: 50,
-                        backgroundColor: Colors.blueAccent.withOpacity(0.2),
+                        backgroundColor:
+                            Theme.of(context).primaryColor.withOpacity(0.2),
                         child: const Icon(
                           Icons.person,
                           size: 50,
-                          color: Colors.blueAccent,
+                          color: primaryColor,
                         ),
                       ),
                       const SizedBox(height: 10),

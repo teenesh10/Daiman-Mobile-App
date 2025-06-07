@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/home_page.dart';
 import 'package:daiman_mobile/views/booking/booking.dart';
 import 'package:daiman_mobile/views/booking/booking_history.dart';
@@ -5,7 +6,6 @@ import 'package:daiman_mobile/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-// Wrapper to pass initial index
 class NavBarWrapper extends StatelessWidget {
   final int initialIndex;
 
@@ -82,7 +82,7 @@ class _NavBarState extends State<NavBar> {
               color: Colors.black,
               activeColor: Colors.white,
               iconSize: 24,
-              tabBackgroundColor: Colors.blueAccent,
+              tabBackgroundColor: primaryColor,
               duration: const Duration(milliseconds: 400),
               rippleColor: Colors.white54,
               onTabChange: _onItemTapped,

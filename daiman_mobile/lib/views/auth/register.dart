@@ -41,7 +41,24 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _register() async {
-    if (!_isValidEmail(_emailController.text)) {
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (username.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      CustomSnackBar.showFailure(
+        context,
+        'Error!',
+        "Please fill in all the fields.",
+      );
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
       CustomSnackBar.showFailure(
         context,
         'Error!',
@@ -50,16 +67,16 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    if (!_isValidPassword(_passwordController.text)) {
+    if (!_isValidPassword(password)) {
       CustomSnackBar.showFailure(
         context,
         'Error!',
-        "Password must be at least 6 characters long.",
+        "Password must be at least 6 characters.",
       );
       return;
     }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
+    if (password != confirmPassword) {
       CustomSnackBar.showFailure(
         context,
         'Error!',
@@ -72,10 +89,11 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
     });
 
+    // Register user
     String? message = await _authController.register(
-      _usernameController.text,
-      _emailController.text,
-      _passwordController.text,
+      username,
+      email,
+      password,
     );
 
     setState(() {
@@ -89,11 +107,17 @@ class _RegisterPageState extends State<RegisterPage> {
         message!,
       );
       Navigator.pushReplacementNamed(context, "/login");
+    } else if (message != null && message.contains("already exists")) {
+      CustomSnackBar.showFailure(
+        context,
+        'Error!',
+        "Email already exists.",
+      );
     } else {
       CustomSnackBar.showFailure(
         context,
         'Error!',
-        message ?? "Registration failed",
+        message ?? "Registration failed.",
       );
     }
   }
@@ -194,11 +218,9 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : _register, // Disable button when loading
+                  onPressed: _isLoading ? null : _register,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Constants.primaryColor,
+                    backgroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -226,11 +248,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Colors.black,
                         ),
                       ),
-                      children: const [
+                      children: [
                         TextSpan(
                           text: "Login now",
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ],

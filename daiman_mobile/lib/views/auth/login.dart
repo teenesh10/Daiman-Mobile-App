@@ -27,16 +27,10 @@ class _LoginPageState extends State<LoginPage> {
     return emailRegex.hasMatch(email);
   }
 
-  // Login method with validation, loading, and custom snackbar
   _login() async {
-    if (_passwordController.text.isEmpty) {
+    if (_passwordController.text.isEmpty || _emailController.text.isEmpty) {
       CustomSnackBar.showFailure(
-          context, "Password Error", "Password cannot be empty.");
-      return;
-    }
-    if (_emailController.text.isEmpty) {
-      CustomSnackBar.showFailure(
-          context, "Email Error", "Email cannot be empty.");
+          context, "Empty Fields", "Please fill in the fields.");
       return;
     }
     if (!_isValidEmail(_emailController.text)) {
@@ -53,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
     String? error = await _authController.login(
         _emailController.text, _passwordController.text);
 
-    // Stop loading
     setState(() {
       _isLoading = false;
     });
@@ -62,16 +55,14 @@ class _LoginPageState extends State<LoginPage> {
       // Check if the email is verified
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && user.emailVerified) {
-        // CustomSnackBar.showSuccess(context, "Login Success", "Welcome back!");
         Navigator.pushReplacementNamed(context, "/home");
       } else {
         CustomSnackBar.showFailure(context, "Verification Required",
             "Please verify your email before logging in.");
       }
     } else {
-      // Show error message if any
       CustomSnackBar.showFailure(
-          context, "Login Failed", "User does not exist. Register now.");
+          context, "Login Failed", "Invalid email or password!");
     }
   }
 
@@ -147,9 +138,9 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.pushNamed(context, "/forgot_password");
                     },
-                    child: const Text(
+                    child: Text(
                       "Forgot Password?",
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                   ),
                 ],
@@ -160,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Constants.primaryColor,
+                    backgroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -187,12 +178,12 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.black,
                         ),
                       ),
-                      children: const [
+                      children: [
                         TextSpan(
                           text: "Register Now",
                           style: TextStyle(
                             // fontSize: 16,
-                            color: Colors.blue,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ],

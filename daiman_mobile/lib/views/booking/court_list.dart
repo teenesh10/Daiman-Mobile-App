@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/controllers/payment_controller.dart';
 import 'package:daiman_mobile/models/court.dart';
@@ -32,7 +33,7 @@ class CourtListPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: primaryColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -81,9 +82,9 @@ class CourtListPage extends StatelessWidget {
                   child: const Text(
                     "View Live Availability",
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: primaryColor,
                       decoration: TextDecoration.underline,
-                      decorationColor: Colors.blue,
+                      decorationColor: primaryColor,
                     ),
                   ),
                 ),
@@ -126,8 +127,8 @@ class CourtListPage extends StatelessWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
-                              ),
+                                  backgroundColor: primaryColor,
+                                  foregroundColor: Colors.white),
                               child: const Text("Retry"),
                             ),
                           ],
@@ -173,7 +174,6 @@ class CourtListPage extends StatelessWidget {
               },
             ),
           ),
-
           Consumer<BookingController>(
             builder: (context, controller, _) {
               return Padding(
@@ -197,7 +197,7 @@ class CourtListPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     backgroundColor: controller.selectedCourts.isEmpty
                         ? Colors.grey
-                        : Colors.blueAccent,
+                        : primaryColor,
                   ),
                   child: Center(
                     child: Text(

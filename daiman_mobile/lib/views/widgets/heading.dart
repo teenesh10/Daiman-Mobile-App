@@ -8,20 +8,18 @@ class SectionHeading extends StatelessWidget {
     this.showActionButton = false,
     required this.title,
     this.buttonTitle = "View All",
-    this.headingStyle = 'large', // New parameter for heading size
+    this.headingStyle = 'large', 
   });
 
   final Color? textColor;
   final bool showActionButton;
   final String title, buttonTitle;
-  final void Function()? onPressed; // Fixed the `void Function()` type
-  final String headingStyle; // New parameter to specify heading size
+  final void Function()? onPressed; 
+  final String headingStyle; 
 
   @override
   Widget build(BuildContext context) {
-    // Get the text theme from the context
 
-    // Set the appropriate text style based on headingStyle
     TextStyle headingTextStyle;
     switch (headingStyle) {
       case 'medium':
@@ -45,13 +43,13 @@ class SectionHeading extends StatelessWidget {
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Added spacing
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, 
       children: [
         Expanded(
           child: Text(
             title,
             style: headingTextStyle.copyWith(
-                color: textColor), // Apply the text style
+                color: textColor), 
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

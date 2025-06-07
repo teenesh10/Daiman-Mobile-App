@@ -18,10 +18,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final AuthController _authController = AuthController();
   bool resetSent = false;
 
+  // Helper method to validate email
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return emailRegex.hasMatch(email);
+  }
+
   void _resetPassword() async {
     String? message =
         await _authController.resetPassword(_emailController.text);
 
+    if (!_isValidEmail(_emailController.text)) {
+      CustomSnackBar.showFailure(
+          context, "Invalid Email", "Please enter a valid email format.");
+      return;
+    }
     if (message == "success") {
       CustomSnackBar.showSuccess(
           context, "Success", "Password reset link sent to your email.");
@@ -30,7 +41,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       });
     } else {
       CustomSnackBar.showFailure(
-          context, "Error", "Enter your valid email address.");
+          context, "Invalid Email", "Enter your valid email address.");
       setState(() {
         resetSent = false;
       });
@@ -89,7 +100,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 child: ElevatedButton(
                   onPressed: _resetPassword,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Constants.primaryColor,
+                    backgroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -115,11 +126,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           color: Colors.black,
                         ),
                       ),
-                      children: const [
+                      children: [
                         TextSpan(
                           text: "Login",
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ],

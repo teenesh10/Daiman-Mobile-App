@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/views/payment/payment_method.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ class BookingSummaryPage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: const Text("Booking Summary"),
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: primaryColor,
         ),
         body: const Center(
           child: Text(
@@ -60,7 +61,7 @@ class BookingSummaryPage extends StatelessWidget {
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: primaryColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -99,7 +100,7 @@ class BookingSummaryPage extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.blueAccent),
+                      side: const BorderSide(color: primaryColor),
                     ),
                     child: const Text("Cancel"),
                   ),
@@ -116,7 +117,7 @@ class BookingSummaryPage extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text("Book Now"),

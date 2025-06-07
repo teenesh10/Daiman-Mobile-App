@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/views/widgets/history_tab.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class BookingHistoryPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: primaryColor,
           title: const Text(
             'Booking History',
             style: TextStyle(
@@ -21,13 +22,6 @@ class BookingHistoryPage extends StatelessWidget {
           ),
           centerTitle: true,
           elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1.0),
-            child: Container(
-              color: Colors.white,
-              height: 1.0,
-            ),
-          ),
         ),
         body: Column(
           children: [
@@ -35,10 +29,10 @@ class BookingHistoryPage extends StatelessWidget {
               color: Colors.white,
               child: const TabBar(
                 indicator: BoxDecoration(
-                  color: Colors.blueAccent,
+                  color: primaryColor,
                 ),
                 labelColor: Colors.white,
-                unselectedLabelColor: Colors.blueAccent,
+                unselectedLabelColor: primaryColor,
                 labelStyle: TextStyle(fontWeight: FontWeight.bold),
                 tabs: [
                   Tab(text: 'Upcoming'),

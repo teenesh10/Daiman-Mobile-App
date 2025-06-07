@@ -1,4 +1,5 @@
 import 'package:daiman_mobile/about.dart';
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/views/widgets/card_design.dart';
 import 'package:daiman_mobile/views/widgets/curved_shape.dart';
 import 'package:daiman_mobile/views/widgets/curved_widget.dart';
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -120,7 +121,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.pushNamed(context, '/chat');
         },
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: primaryColor,
         tooltip: 'Chatbot',
         child: const Icon(Icons.android, color: Colors.white),
       ),

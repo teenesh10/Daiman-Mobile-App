@@ -14,11 +14,9 @@ class AuthController {
         password: password,
       );
 
-      // Reload user data to check verification status
       await userCredential.user!.reload();
-      User? user = _auth.currentUser; // Get the current user
+      User? user = _auth.currentUser;
 
-      // Check if email is verified
       if (!user!.emailVerified) {
         await _auth.signOut();
         return "Please verify your email.";
@@ -56,7 +54,6 @@ class AuthController {
         'email': email,
       });
 
-      // Return success message here
       return "Verification link sent to your email.";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -75,9 +72,8 @@ class AuthController {
   Future<String?> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return "success"; // Indicate success explicitly
+      return "success";
     } catch (e) {
-      // Handle Firebase-specific error messages
       if (e is FirebaseAuthException) {
         switch (e.code) {
           case 'invalid-email':
@@ -132,7 +128,6 @@ class AuthController {
   Future<void> deleteUserCompletely() async {
     User? user = _auth.currentUser;
     if (user != null) {
-      // Delete user Firestore data
       await _firestore.collection('user').doc(user.uid).delete();
       // Delete user Authentication account
       await user.delete();
@@ -144,18 +139,14 @@ class AuthController {
 
     if (user != null) {
       try {
-        // Force refresh the user
         await user.reload();
-        user =
-            FirebaseAuth.instance.currentUser; 
+        user = FirebaseAuth.instance.currentUser;
 
         if (user == null) {
-          // User is gone after reload
           await logout();
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
-          // User no longer exists
           await logout();
         }
       } catch (e) {

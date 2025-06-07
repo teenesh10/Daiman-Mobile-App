@@ -16,7 +16,7 @@ class Facility {
   factory Facility.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Facility(
-      facilityID: doc.id, // Get the document ID
+      facilityID: doc.id, 
       facilityName: data['facilityName'] ?? '',
       capacity: data['capacity'] ?? 0,
       description: data['description'] ?? '',

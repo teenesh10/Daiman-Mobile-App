@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:daiman_mobile/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -35,11 +36,11 @@ class _BookingCalendarState extends State<BookingCalendar> {
         },
         calendarStyle: CalendarStyle(
           selectedDecoration: const BoxDecoration(
-            color: Colors.blueAccent,
+            color: primaryColor,
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.3),
+            color: Theme.of(context).primaryColor.withOpacity(0.3),
             shape: BoxShape.circle,
           ),
         ),

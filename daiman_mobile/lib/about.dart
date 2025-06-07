@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:flutter/material.dart';
 
 class AboutUsPage extends StatelessWidget {
@@ -42,12 +43,13 @@ The highlight is our international FIFA Court, ideal for hosting global competit
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: primaryColor,
+                        foregroundColor: bgColor,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: const Text(
                         'Close',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ),

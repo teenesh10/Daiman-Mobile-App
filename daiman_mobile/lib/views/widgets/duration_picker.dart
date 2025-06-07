@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:daiman_mobile/constants.dart';
 import 'package:flutter/material.dart';
 
 class DurationSelector extends StatefulWidget {
@@ -12,15 +13,14 @@ class DurationSelector extends StatefulWidget {
 }
 
 class _DurationSelectorState extends State<DurationSelector> {
-  int _duration = 1; // Start with 1 hour
+  int _duration = 1;
 
   void _incrementDuration() {
     if (_duration < 24) {
       setState(() {
         _duration++;
       });
-      widget.onDurationSelected(_duration); // Call the callback with the updated duration
-      print("Selected duration: $_duration Hour(s)");
+      widget.onDurationSelected(_duration);
     }
   }
 
@@ -29,8 +29,7 @@ class _DurationSelectorState extends State<DurationSelector> {
       setState(() {
         _duration--;
       });
-      widget.onDurationSelected(_duration); // Call the callback with the updated duration
-      print("Selected duration: $_duration Hour(s)");
+      widget.onDurationSelected(_duration);
     }
   }
 
@@ -41,14 +40,13 @@ class _DurationSelectorState extends State<DurationSelector> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Decrement Button
           GestureDetector(
             onTap: _decrementDuration,
             child: Container(
               width: 40,
               height: 40,
               decoration: const BoxDecoration(
-                color: Colors.blueAccent,
+                color: primaryColor,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -60,7 +58,7 @@ class _DurationSelectorState extends State<DurationSelector> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: Text(
-              '$_duration Hour${_duration > 1 ? 's' : ''}', // Add 's' for plural if needed
+              '$_duration Hour${_duration > 1 ? 's' : ''}',
               style: const TextStyle(fontSize: 18),
             ),
           ),
@@ -71,7 +69,7 @@ class _DurationSelectorState extends State<DurationSelector> {
               width: 40,
               height: 40,
               decoration: const BoxDecoration(
-                color: Colors.blueAccent,
+                color: primaryColor,
                 shape: BoxShape.circle,
               ),
               child: const Icon(

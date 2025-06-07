@@ -1,3 +1,4 @@
+import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/models/court.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,6 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
       if (slots.length > 100) break;
     }
 
-    print('Final slots count: ${slots.length}');
     return slots;
   }
 
@@ -142,7 +142,7 @@ class _LiveAvailabilityPageState extends State<LiveAvailabilityPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: primaryColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),

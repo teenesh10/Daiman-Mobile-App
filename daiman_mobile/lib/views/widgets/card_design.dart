@@ -33,32 +33,28 @@ class CustomCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ✅ Truncate long text with ellipsis
                 Text(
                   title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.black,
                       ),
-                  maxLines: 3, // you can change to 2 or 1 if needed
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                // ✅ Align the Read More button to the left
                 Align(
                   alignment: Alignment.centerLeft,
                   child: TextButton(
                     onPressed: onReadMore,
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.blueAccent,
+                      foregroundColor: Theme.of(context).primaryColor,
                       textStyle: const TextStyle(
                         fontSize: 16,
                         decoration: TextDecoration.none,
                       ),
-                      padding:
-                          EdgeInsets.zero, // removes default button padding
-                      minimumSize: const Size(0, 0), // removes default min size
-                      tapTargetSize:
-                          MaterialTapTargetSize.shrinkWrap, // tighter hit area
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     child: const Text("Read More"),
                   ),

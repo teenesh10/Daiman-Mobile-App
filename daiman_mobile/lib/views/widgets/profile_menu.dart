@@ -25,9 +25,9 @@ class ProfileMenuWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: Colors.blue.withOpacity(0.1), // Changed to direct color
+          color: Theme.of(context).primaryColor, 
         ),
-        child: Icon(icon, color: Colors.blue), // Changed to direct color
+        child: Icon(icon, color: Colors.white), 
       ),
       title: Text(
         title,
@@ -42,7 +42,7 @@ class ProfileMenuWidget extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
               ),
               child: const Icon(
-                Icons.chevron_right, // Replaced LineAwesomeIcons with Flutter icon
+                Icons.chevron_right, 
                 size: 18.0,
                 color: Colors.grey,
               ),

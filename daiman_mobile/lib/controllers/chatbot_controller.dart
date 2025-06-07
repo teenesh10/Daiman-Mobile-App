@@ -26,9 +26,7 @@ class ChatbotController {
         'status': 'pending', 
       });
 
-      print("Report submitted successfully.");
     } catch (e) {
-      print("Error submitting report: $e");
       rethrow;
     }
   }
