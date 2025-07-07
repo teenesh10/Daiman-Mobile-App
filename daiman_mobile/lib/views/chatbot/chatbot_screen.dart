@@ -1,7 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:daiman_mobile/constants.dart';
-import 'package:daiman_mobile/services/chatbot.dart';
+// import 'package:daiman_mobile/services/chatbot.dart';
 import 'package:daiman_mobile/services/chatbot_response.dart';
 import 'package:daiman_mobile/views/chatbot/report_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final List<types.Message> _messages = [];
-  final OpenAIService _openAIService = OpenAIService();
+  // final OpenAIService _openAIService = OpenAIService();
   final _user = const types.User(id: "user");
   final _bot = const types.User(id: "bot");
   final _uuid = const Uuid();
@@ -43,15 +43,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _addMessage(userMessage);
 
+    // String response;
     String? response = _getKeywordResponse(text);
 
-    if (response == null) {
-      try {
-        response = await _openAIService.sendMessage(text);
-      } catch (e) {
-        response = "Sorry! Please contact our customer service to know more.";
-      }
-    }
+    // if (response == null) {
+    //   try {
+    //     response = await _openAIService.sendMessage(text);
+    //   } catch (e) {
+    //     response = "Sorry! Please contact our customer service, 07-557 3888.";
+    //   }
+    // }
+
+    response ??=
+        "Sorry, I couldn't understand your question. Please try contact our customer service 07-557 3888.";
 
     final botMessage = types.TextMessage(
       author: _bot,
@@ -64,11 +68,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String? _getKeywordResponse(String text) {
     final normalizedText = text.toLowerCase();
-    for (final keyword in keywordResponses.keys) {
-      if (normalizedText.contains(keyword)) {
-        return keywordResponses[keyword];
+
+    for (final keyword in keywordSynonyms.keys) {
+      final synonyms = keywordSynonyms[keyword]!;
+      for (final phrase in synonyms) {
+        if (normalizedText.contains(phrase)) {
+          return keywordResponses[keyword];
+        }
       }
     }
+
     return null;
   }
 
@@ -202,6 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   inputTextColor: Colors.white,
                   inputTextCursorColor: Colors.white,
                   sendButtonIcon: Icon(Icons.send, color: Colors.white),
+                  inputTextStyle: TextStyle(color: Colors.white),
                 ),
               ),
             ),
