@@ -26,7 +26,7 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<BookingController>(context);
+    Provider.of<BookingController>(context);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -172,6 +172,15 @@ class _BookingPageState extends State<BookingPage> {
                               return;
                             }
 
+                            final controller = Provider.of<BookingController>(
+                                context,
+                                listen: false);
+                            final selectedFacility =
+                                controller.selectedFacility!;
+                            final selectedDate = controller.selectedDate;
+                            final selectedTime = controller.startTime;
+                            final selectedDuration = controller.duration;
+
                             if (controller.rates.isEmpty ||
                                 controller.rates.values
                                     .every((rate) => rate == 0.0)) {
@@ -180,32 +189,32 @@ class _BookingPageState extends State<BookingPage> {
                               return;
                             }
 
-                            final isLateNightBooking = selectedTime!.hour < 2;
+                            final isLateNightBooking = selectedTime.hour < 2;
                             final adjustedStartDate = isLateNightBooking
-                                ? selectedDate!.add(const Duration(days: 1))
-                                : selectedDate!;
+                                ? selectedDate.add(const Duration(days: 1))
+                                : selectedDate;
 
                             final startTime = DateTime(
                               adjustedStartDate.year,
                               adjustedStartDate.month,
                               adjustedStartDate.day,
-                              selectedTime!.hour,
-                              selectedTime!.minute,
+                              selectedTime.hour,
+                              selectedTime.minute,
                             );
 
-                            controller.setSelectedDate(selectedDate!);
+                            // These setters might not be necessary unless you're using them later
+                            controller.setSelectedDate(selectedDate);
                             controller.setStartTime(startTime);
-                            controller.setDuration(selectedDuration!);
+                            controller.setDuration(selectedDuration);
 
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CourtListPage(
-                                  facilityID:
-                                      controller.selectedFacility!.facilityID,
-                                  date: selectedDate!,
+                                  facilityID: selectedFacility.facilityID,
+                                  date: selectedDate,
                                   startTime: startTime,
-                                  duration: selectedDuration!,
+                                  duration: selectedDuration,
                                 ),
                               ),
                             );
@@ -235,47 +244,49 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   String? _validateInputs() {
-    final now = DateTime.now();
-    final facilityOpenHour = 8; // 8:00 AM
-    final facilityCloseHour = 2; // 2:00 AM (next day)
+    final bookingController =
+        Provider.of<BookingController>(context, listen: false);
 
-    if (selectedDate == null) return "Please select a date.";
-    if (Provider.of<BookingController>(context, listen: false)
-            .selectedFacility ==
-        null) {
+    final now = DateTime.now();
+    const facilityOpenHour = 8;
+    const facilityCloseHour = 2;
+
+    final selectedFacility = bookingController.selectedFacility;
+    final selectedDate = bookingController.selectedDate;
+    final selectedTime = bookingController.startTime;
+    final selectedDuration = bookingController.duration;
+
+    if (selectedFacility == null) {
       return "Please select a facility.";
     }
-    if (selectedTime == null) return "Please select a start time.";
-    if (selectedDuration == null) return "Please select a duration.";
 
-    final isLateNightBooking = selectedTime!.hour < facilityCloseHour;
+    final isLateNightBooking = selectedTime.hour < facilityCloseHour;
     final adjustedStartDate = isLateNightBooking
-        ? selectedDate!.add(const Duration(days: 1))
-        : selectedDate!;
+        ? selectedDate.add(const Duration(days: 1))
+        : selectedDate;
 
     final selectedDateTime = DateTime(
       adjustedStartDate.year,
       adjustedStartDate.month,
       adjustedStartDate.day,
-      selectedTime!.hour,
-      selectedTime!.minute,
+      selectedTime.hour,
+      selectedTime.minute,
     );
 
-    final endDateTime =
-        selectedDateTime.add(Duration(hours: selectedDuration!));
+    final endDateTime = selectedDateTime.add(Duration(hours: selectedDuration));
 
     final openTime = DateTime(
-      selectedDate!.year,
-      selectedDate!.month,
-      selectedDate!.day,
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
       facilityOpenHour,
       0,
     );
 
     final closeTime = DateTime(
-      selectedDate!.add(const Duration(days: 1)).year,
-      selectedDate!.add(const Duration(days: 1)).month,
-      selectedDate!.add(const Duration(days: 1)).day,
+      selectedDate.add(const Duration(days: 1)).year,
+      selectedDate.add(const Duration(days: 1)).month,
+      selectedDate.add(const Duration(days: 1)).day,
       facilityCloseHour,
       0,
     );
@@ -289,7 +300,7 @@ class _BookingPageState extends State<BookingPage> {
     }
 
     if (endDateTime.isAfter(closeTime)) {
-      return "Booking exceeds facility's closing time at 2:00 AM.";
+      return "Facility's closing time is 2:00 AM.";
     }
 
     return null;

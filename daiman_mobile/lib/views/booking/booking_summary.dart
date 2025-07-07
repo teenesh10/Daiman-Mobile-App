@@ -18,21 +18,6 @@ class BookingSummaryPage extends StatelessWidget {
     final duration = bookingController.duration;
     final selectedCourts = bookingController.selectedCourts;
 
-    if (selectedDate == null || startTime == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text("Booking Summary"),
-          backgroundColor: primaryColor,
-        ),
-        body: const Center(
-          child: Text(
-            "Error: Missing date or time. Please go back and select the required details.",
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      );
-    }
-
     final totalAmount = paymentController.calculateTotalAmount(
       selectedCourts: selectedCourts,
       facilityRates: bookingController.rates,

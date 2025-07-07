@@ -10,8 +10,8 @@ class BookingController with ChangeNotifier {
   List<Court> selectedCourts = [];
   Map<String, double> rates = {};
 
-  DateTime? selectedDate;
-  DateTime? startTime;
+  DateTime selectedDate = DateTime.now();
+  DateTime startTime = DateTime.now();
   int duration = 1;
 
   BookingController() {
@@ -182,9 +182,6 @@ class BookingController with ChangeNotifier {
   void clearSelection() {
     selectedCourts.clear();
     selectedFacility = null;
-    selectedDate = null;
-    startTime = null;
-    duration = 1;
     rates.clear();
     notifyListeners();
   }

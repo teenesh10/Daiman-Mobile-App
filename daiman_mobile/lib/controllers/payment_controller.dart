@@ -46,6 +46,12 @@ class PaymentController with ChangeNotifier {
     BuildContext context,
   ) async {
     try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+
       final totalAmountRM = calculateTotalAmount(
         selectedCourts: selectedCourts,
         facilityRates: facilityRates,
@@ -81,6 +87,8 @@ class PaymentController with ChangeNotifier {
           amountPaid: totalAmountRM,
         );
 
+        Navigator.pop(context);
+
         CustomSnackBar.showSuccess(
           context,
           'Payment Successful!',
@@ -94,6 +102,8 @@ class PaymentController with ChangeNotifier {
           ),
         );
       } on StripeException catch (e) {
+        Navigator.pop(context);
+
         if (e.error.code == FailureCode.Canceled) {
           CustomSnackBar.showFailure(
             context,
@@ -108,6 +118,7 @@ class PaymentController with ChangeNotifier {
           );
         }
       } catch (e) {
+        Navigator.pop(context);
         CustomSnackBar.showFailure(
           context,
           'Payment Error',
@@ -115,6 +126,7 @@ class PaymentController with ChangeNotifier {
         );
       }
     } catch (e) {
+      Navigator.pop(context);
       CustomSnackBar.showFailure(
         context,
         'Error',
