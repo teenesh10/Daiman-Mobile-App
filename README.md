@@ -44,8 +44,8 @@ In parallel, a **web-based admin dashboard** was also developed for facility sta
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/teenesh10/daiman-mobile-app.git
-   cd daiman-mobile-app
+   git clone https://github.com/teenesh10/Daiman-Mobile-App.git
+   cd mobile-app
 
 2. Install dependencies:
    flutter pub get
