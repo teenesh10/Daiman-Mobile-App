@@ -2,6 +2,7 @@ import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/controllers/booking_controller.dart';
 import 'package:daiman_mobile/controllers/payment_controller.dart';
+import 'package:daiman_mobile/demo_mode.dart';
 import 'package:daiman_mobile/loading_screen.dart';
 import 'package:daiman_mobile/navbar.dart';
 import 'package:daiman_mobile/views/auth/forgot_password.dart';
@@ -20,13 +21,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+  
+  // Enable demo mode by default for portfolio
+  await DemoMode.enableDemoMode();
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Ensure Firebase is initialized
-  Stripe.publishableKey =
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? 
       'pk_test_51QXxohJMi70xUkuHjcec8DFEuYOLYPVY2DEX2PMZTfIvvon1FybbHJontUwhpVLkMl3PNkNfD5hLVD3eebxv7xKg00lLibZj4m';
   await Stripe.instance.applySettings();
   await AuthController().checkUserStatus();

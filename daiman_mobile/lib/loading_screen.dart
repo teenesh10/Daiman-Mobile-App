@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
+import 'demo_mode.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -28,6 +29,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) {
+      return;
+    }
+
+    // Check if demo mode is enabled
+    bool isDemoMode = await DemoMode.isDemoMode();
+    
+    if (isDemoMode) {
+      // Enable demo mode and go to home
+      await DemoMode.enableDemoMode();
+      Navigator.pushReplacementNamed(context, "/home");
+      _isNavigating = false;
       return;
     }
 

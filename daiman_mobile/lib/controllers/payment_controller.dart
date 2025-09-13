@@ -7,6 +7,8 @@ import 'package:daiman_mobile/models/court.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:daiman_mobile/demo_mode.dart';
 
 class PaymentController with ChangeNotifier {
   double calculateTotalAmount({
@@ -46,6 +48,22 @@ class PaymentController with ChangeNotifier {
     BuildContext context,
   ) async {
     try {
+      // Check if in demo mode
+      bool isDemoMode = await DemoMode.isDemoMode();
+      
+      if (isDemoMode) {
+        await _handleDemoPayment(
+          selectedCourts: selectedCourts,
+          facilityRates: facilityRates,
+          date: date,
+          startTime: startTime,
+          duration: duration,
+          facilityID: facilityID,
+          context: context,
+        );
+        return;
+      }
+
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -135,10 +153,55 @@ class PaymentController with ChangeNotifier {
     }
   }
 
+  Future<void> _handleDemoPayment({
+    required List<Court> selectedCourts,
+    required Map<String, double> facilityRates,
+    required DateTime date,
+    required DateTime startTime,
+    required int duration,
+    required String facilityID,
+    required BuildContext context,
+  }) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    calculateTotalAmount(
+      selectedCourts: selectedCourts,
+      facilityRates: facilityRates,
+      date: date,
+      startTime: startTime,
+      duration: duration,
+    );
+
+    // Simulate payment processing
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Generate demo booking ID
+    final bookingID = 'demo_booking_${DateTime.now().millisecondsSinceEpoch}';
+
+    Navigator.pop(context);
+
+    CustomSnackBar.showSuccess(
+      context,
+      'Demo Payment Successful!',
+      'This is a demo payment. Your booking has been confirmed.',
+    );
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => InvoicePage(bookingID: bookingID),
+      ),
+    );
+  }
+
   Future<Map<String, dynamic>> createPaymentIntent(
       String amount, String currency) async {
     final response = await http.post(
-      Uri.parse('https://createpaymentintent-d7u4qgi7fa-uc.a.run.app'),
+      Uri.parse(dotenv.env['PAYMENT_INTENT_URL'] ?? 'https://createpaymentintent-d7u4qgi7fa-uc.a.run.app'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -162,7 +225,7 @@ class PaymentController with ChangeNotifier {
     required String paymentMethod,
   }) async {
     final response = await http.post(
-      Uri.parse('https://createcheckoutsession-d7u4qgi7fa-uc.a.run.app'),
+      Uri.parse(dotenv.env['CHECKOUT_SESSION_URL'] ?? 'https://createcheckoutsession-d7u4qgi7fa-uc.a.run.app'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

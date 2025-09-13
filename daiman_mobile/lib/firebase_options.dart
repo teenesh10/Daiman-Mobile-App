@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -52,11 +53,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAsAy7iUsOjVi5mESHbvtPqlADHk3iXwCQ',
-    appId: '1:95968883140:android:875c93f57cf8b6c7f3b491',
-    messagingSenderId: '95968883140',
-    projectId: 'fyp-daiman',
-    storageBucket: 'fyp-daiman.appspot.com',
+  static FirebaseOptions get android => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_API_KEY'] ?? 'AIzaSyAsAy7iUsOjVi5mESHbvtPqlADHk3iXwCQ',
+    appId: dotenv.env['FIREBASE_APP_ID'] ?? '1:95968883140:android:875c93f57cf8b6c7f3b491',
+    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? '95968883140',
+    projectId: dotenv.env['FIREBASE_PROJECT_ID'] ?? 'fyp-daiman',
+    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? 'fyp-daiman.appspot.com',
   );
 }

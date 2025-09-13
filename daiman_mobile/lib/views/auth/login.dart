@@ -3,6 +3,7 @@
 import 'package:daiman_mobile/constants.dart';
 import 'package:daiman_mobile/controllers/auth_controller.dart';
 import 'package:daiman_mobile/custom_snackbar.dart';
+import 'package:daiman_mobile/demo_mode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,6 +64,26 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       CustomSnackBar.showFailure(
           context, "Login Failed", "Invalid email or password!");
+    }
+  }
+
+  _demoLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await DemoMode.enableDemoMode();
+      CustomSnackBar.showSuccess(
+          context, "Demo Mode", "Welcome to the demo!");
+      Navigator.pushReplacementNamed(context, "/home");
+    } catch (e) {
+      CustomSnackBar.showFailure(
+          context, "Demo Failed", "Could not start demo mode!");
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -160,6 +181,25 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text(
                     "Login",
                     style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              // Demo Mode Button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: _isLoading ? null : _demoLogin,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: primaryColor),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "Try Demo Mode",
+                    style: TextStyle(fontSize: 16, color: primaryColor),
                   ),
                 ),
               ),
