@@ -36,7 +36,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Ensure Firebase is initialized
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? 
-      'pk_test_51QXxohJMi70xUkuHjcec8DFEuYOLYPVY2DEX2PMZTfIvvon1FybbHJontUwhpVLkMl3PNkNfD5hLVD3eebxv7xKg00lLibZj4m';
+      'YOUR_STRIPE_PUBLISHABLE_KEY_HERE';
   await Stripe.instance.applySettings();
   await AuthController().checkUserStatus();
   runApp(

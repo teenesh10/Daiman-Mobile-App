@@ -6,7 +6,7 @@ import 'package:daiman_mobile/controllers/demo_controller.dart';
 
 class OpenAIService {
   String get apiKey => dotenv.env['OPENROUTER_API_KEY'] ?? 
-      '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';
+      'YOUR_OPENROUTER_API_KEY_HERE';
 
   Future<String> sendMessage(String message) async {
     // Check if in demo mode

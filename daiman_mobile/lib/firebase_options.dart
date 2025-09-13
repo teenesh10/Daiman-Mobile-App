@@ -54,10 +54,10 @@ class DefaultFirebaseOptions {
   }
 
   static FirebaseOptions get android => FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY'] ?? 'AIzaSyAsAy7iUsOjVi5mESHbvtPqlADHk3iXwCQ',
-    appId: dotenv.env['FIREBASE_APP_ID'] ?? '1:95968883140:android:875c93f57cf8b6c7f3b491',
-    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? '95968883140',
-    projectId: dotenv.env['FIREBASE_PROJECT_ID'] ?? 'fyp-daiman',
-    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? 'fyp-daiman.appspot.com',
+    apiKey: dotenv.env['FIREBASE_API_KEY'] ?? 'YOUR_FIREBASE_API_KEY_HERE',
+    appId: dotenv.env['FIREBASE_APP_ID'] ?? 'YOUR_FIREBASE_APP_ID_HERE',
+    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? 'YOUR_MESSAGING_SENDER_ID_HERE',
+    projectId: dotenv.env['FIREBASE_PROJECT_ID'] ?? 'YOUR_PROJECT_ID_HERE',
+    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? 'YOUR_STORAGE_BUCKET_HERE',
   );
 }
