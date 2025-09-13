@@ -26,7 +26,7 @@ In parallel, a **web-based admin dashboard** was also developed for facility sta
 | Backend       | Node.js, Cloud Functions         |
 | Database      | Firebase Firestore               |
 | Auth & Payment| Firebase Auth, Stripe API        |
-| AI Chatbot    | OpenAI GPT4-mini API             |
+| AI Chatbot    | Openrouter API             |
 
 ---
 
@@ -40,17 +40,6 @@ In parallel, a **web-based admin dashboard** was also developed for facility sta
 
 ---
 
-## 🚀 How to Run Locally
+🌐 **Live Demo**: (https://appetize.io/embed/b_3vlglyyrpha54t4bi34aeodc2u)
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/teenesh10/Daiman-Mobile-App.git
-   cd mobile-app
-
-2. Install dependencies:
-   flutter pub get
-
-3. Run the app:
-   flutter run
-
-4. (Ensure Firebase and Stripe credentials are correctly configured in your environment)
+// Some features will be unavailable since in demo mode
